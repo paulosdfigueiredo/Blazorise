@@ -182,8 +182,8 @@ function generateEmptyPage(instance, pageNum) {
         const pageElement = getOrAddPageElement(instance, pageNum);
 
         if (pageElement) {
-            pageElement.height = viewport.height + 'px';
-            pageElement.width = viewport.width + 'px';
+            pageElement.style.height = viewport.height + 'px';
+            pageElement.style.width = viewport.width + 'px';
 
             const canvasElement = pageElement.querySelector('canvas.b-pdf-page-canvas');
 
