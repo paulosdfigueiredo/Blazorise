@@ -57,7 +57,8 @@ namespace Blazorise.PdfViewer
                 {
                     Source,
                     Scale,
-                    Selectable
+                    Selectable,
+                    PageTransition = PageTransition.ToPdfPageTransitionString(),
                 } );
 
                 Initialized = true;
@@ -228,6 +229,8 @@ namespace Blazorise.PdfViewer
         [Parameter] public EventCallback<int> PageCountChanged { get; set; }
 
         [Parameter] public EventCallback<string> HyperlinkClicked { get; set; }
+
+        [Parameter] public PdfPageTransition PageTransition { get; set; } = PdfPageTransition.Continuous;
 
         #endregion
     }

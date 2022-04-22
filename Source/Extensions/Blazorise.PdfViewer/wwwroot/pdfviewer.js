@@ -69,9 +69,13 @@ function loadPdf(instance, source, pageNum) {
         instance.pdf = pdf;
         instance.pageNum = pageNum;
         instance.numPages = pdf.numPages;
+        instance.pages = Array(pdf.numPages).fill({ pageRendering: false, pending: false });
+        instance.pendingPages = [];
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-            getOrAddPageElement(instance, i);
+        if (instance.options.pageTransition === "continuous") {
+            for (let i = 1; i <= pdf.numPages; i++) {
+                getOrAddPageElement(instance, i);
+            }
         }
 
         if (instance.dotNetObjectRef) {
@@ -79,41 +83,6 @@ function loadPdf(instance, source, pageNum) {
         }
 
         generateEmptyPage(instance, pageNum);
-    });
-}
-
-function generateEmptyPage(instance, pageNum) {
-    instance.pageRendering = true;
-
-    instance.pdf.getPage(pageNum).then(function (page) {
-        const viewport = page.getViewport({ scale: instance.options.scale });
-
-        const pageElement = getOrAddPageElement(instance, pageNum);
-
-        if (pageElement) {
-            pageElement.height = viewport.height;
-            pageElement.width = viewport.width;
-
-            const canvasElement = pageElement.querySelector('canvas.b-pdf-page-canvas');
-
-            if (canvasElement) {
-                canvasElement.height = viewport.height;
-                canvasElement.width = viewport.width;
-            }
-
-            respondToVisibility(pageElement, (visible) => {
-                if (visible && pageElement.dataset.loaded === "false") {
-                    renderPage(instance, pageNum);
-                }
-            });
-
-            instance.pageNums.push(pageNum);
-
-            let nextPageNum = pageNum + 1;
-            if (nextPageNum <= instance.numPages) {
-                generateEmptyPage(instance, nextPageNum);
-            }
-        }
     });
 }
 
@@ -132,7 +101,9 @@ function respondToVisibility(element, callback) {
 }
 
 function getOrAddPageElement(instance, pageNum) {
-    let pageElement = instance.element.querySelector('div[data-page-number="' + pageNum + '"]');
+    let pageElement = instance.options.pageTransition === "continuous"
+        ? instance.element.querySelector('div[data-page-number="' + pageNum + '"]')
+        : instance.element.querySelector('div[data-page-number]');
 
     if (!pageElement) {
         pageElement = document.createElement('div');
@@ -140,8 +111,6 @@ function getOrAddPageElement(instance, pageNum) {
         pageElement.dataset.pageNumber = pageNum;
         pageElement.dataset.loaded = false;
         pageElement.classList.add("b-pdf-page");
-        //pageElement.style.display = "flex";
-        //pageElement.style.alignSelf = "center";
         instance.element.appendChild(pageElement);
 
         const canvasElement = document.createElement('canvas');
@@ -154,6 +123,10 @@ function getOrAddPageElement(instance, pageNum) {
             textLayerElement.classList.add("textLayer");
             pageElement.appendChild(textLayerElement);
         }
+    }
+
+    if (pageElement && instance.options.pageTransition !== "continuous") {
+        pageElement.dataset.pageNumber = pageNum;
     }
 
     return pageElement;
@@ -175,7 +148,7 @@ function getVisiblePageElement(instance) {
     return null;
 }
 
-function resetAllPageElements(instance) {
+function clearAllPageElements(instance) {
     let pageElements = instance.element.querySelectorAll('div > .b-pdf-page');
 
     if (pageElements) {
@@ -200,8 +173,60 @@ function resetAllPageElements(instance) {
     }
 }
 
+function generateEmptyPage(instance, pageNum) {
+    instance.pages[pageNum - 1].pageRendering = true;
+
+    instance.pdf.getPage(pageNum).then(function (page) {
+        const viewport = page.getViewport({ scale: instance.options.scale });
+
+        const pageElement = getOrAddPageElement(instance, pageNum);
+
+        if (pageElement) {
+            pageElement.height = viewport.height + 'px';
+            pageElement.width = viewport.width + 'px';
+
+            const canvasElement = pageElement.querySelector('canvas.b-pdf-page-canvas');
+
+            if (canvasElement) {
+                canvasElement.height = viewport.height;
+                canvasElement.width = viewport.width;
+
+                if (instance.options.selectable) {
+                    const textLayerElement = pageElement.querySelector('div.b-pdf-page-text-layer');
+
+                    if (textLayerElement) {
+                        textLayerElement.style.left = canvasElement.offsetLeft + 'px';
+                        textLayerElement.style.top = canvasElement.offsetTop + 'px';
+                        textLayerElement.style.height = canvasElement.offsetHeight + 'px';
+                        textLayerElement.style.width = canvasElement.offsetWidth + 'px';
+                    }
+                }
+            }
+
+            respondToVisibility(pageElement, (visible) => {
+                if (visible && pageElement.dataset.loaded === "false") {
+                    queueRenderPage(instance, pageNum);
+                }
+            });
+
+            if (instance.options.pageTransition === "continuous") {
+                instance.pageNums.push(pageNum);
+
+                let nextPageNum = pageNum + 1;
+                if (nextPageNum <= instance.numPages) {
+                    generateEmptyPage(instance, nextPageNum);
+                }
+            }
+        }
+    }).then(function () {
+        instance.pages[pageNum - 1].pageRendering = false;
+    });
+}
+
 function renderPage(instance, pageNum) {
-    instance.pageRendering = true;
+    const pageIndex = pageNum - 1;
+
+    instance.pages[pageIndex].pageRendering = true;
 
     instance.pdf.getPage(pageNum).then(function (page) {
         const viewport = page.getViewport({ scale: instance.options.scale });
@@ -225,21 +250,15 @@ function renderPage(instance, pageNum) {
                     viewport: viewport
                 };
 
-                let renderTask = page.render(renderContext);
-
-                renderTask = renderTask.promise.then(function () {
-                    instance.pageRendering = false;
-                    if (instance.pageNumPending !== null) {
-                        renderPage(instance, instance.pageNumPending);
-                        instance.pageNumPending = null;
-                    }
-                });
+                let renderTask = page.render(renderContext).promise;
 
                 if (instance.options.selectable) {
+                    instance.pages[pageIndex].pageRendering = true;
+
                     const textLayerElement = pageElement.querySelector('div.b-pdf-page-text-layer');
 
                     if (textLayerElement) {
-                        renderTask.then(function () {
+                        renderTask = renderTask.then(function () {
                             return page.getTextContent();
                         }).then(function (textContent) {
                             textLayerElement.style.left = canvasElement.offsetLeft + 'px';
@@ -254,26 +273,36 @@ function renderPage(instance, pageNum) {
                                 viewport: viewport,
                                 textDivs: []
                             });
+                        }).then(function () {
+                            instance.pages[pageIndex].pageRendering = false;
                         });
                     }
                 }
 
-                pageElement.dataset.loaded = true;
+                renderTask.then(function () {
+                    if (instance.pendingPages && instance.pendingPages.length > 0) {
+                        const pageNumPending = instance.pendingPages.shift();
+                        renderPage(instance, pageNumPending);
+                    }
+                }).then(function () {
+                    instance.pages[pageIndex].pageRendering = false;
+                    pageElement.dataset.loaded = true;
 
-                if (instance.dotNetObjectRef) {
-                    instance.dotNetObjectRef.invokeMethodAsync('NotifyPage', pageNum);
-                }
+                    if (instance.dotNetObjectRef) {
+                        instance.dotNetObjectRef.invokeMethodAsync('NotifyPage', pageNum);
+                    }
+                });
             }
         }
     });
 }
 
 function queueRenderPage(instance, pageNum) {
-    //if (instance.pageRendering) {
-    //    instance.pageNumPending = pageNum;
-    //} else {
-    renderPage(instance, pageNum);
-    //}
+    if (instance.pages[pageNum - 1].pageRendering) {
+        instance.pendingPages.push(pageNum);
+    } else {
+        renderPage(instance, pageNum);
+    }
 }
 
 export function prevPage(element, elementId) {
@@ -290,17 +319,20 @@ export function prevPage(element, elementId) {
             return;
         }
 
-        const prefPageNum = instance.pageNum - 1;
+        if (instance.options.pageTransition === "continuous") {
+            const prevPageNum = instance.pageNum - 1;
 
-        const pageElement = getPageElement(instance, prefPageNum)
+            const pageElement = getPageElement(instance, prevPageNum)
 
-        if (pageElement) {
-            pageElement.scrollIntoView(false);
-            instance.pageNum = prefPageNum;
+            if (pageElement) {
+                pageElement.scrollIntoView(false);
+                instance.pageNum = prevPageNum;
+            }
         }
-
-        //instance.pageNum--;
-        //queueRenderPage(instance, instance.pageNum);
+        else {
+            instance.pageNum--;
+            queueRenderPage(instance, instance.pageNum);
+        }
     }
 }
 
@@ -318,17 +350,19 @@ export function nextPage(element, elementId) {
             return;
         }
 
-        const nextPageNum = instance.pageNum + 1;
+        if (instance.options.pageTransition === "continuous") {
+            const nextPageNum = instance.pageNum + 1;
 
-        const pageElement = getPageElement(instance, nextPageNum)
+            const pageElement = getPageElement(instance, nextPageNum)
 
-        if (pageElement) {
-            pageElement.scrollIntoView(false);
-            instance.pageNum = nextPageNum;
+            if (pageElement) {
+                pageElement.scrollIntoView(false);
+                instance.pageNum = nextPageNum;
+            }
+        } else {
+            instance.pageNum++;
+            queueRenderPage(instance, instance.pageNum);
         }
-
-        //instance.pageNum++;
-        //queueRenderPage(instance, instance.pageNum);
     }
 }
 
@@ -344,8 +378,8 @@ export function zoomIn(element, elementId, scale) {
     if (instance) {
         instance.options.scale += scale;
 
-        resetAllPageElements(instance);
-        generateEmptyPage(instance, 1);
+        clearAllPageElements(instance);
+        generateEmptyPage(instance, instance.pageNum);
 
         let pageElements = instance.element.querySelectorAll('div > .b-pdf-page');
 
@@ -373,8 +407,8 @@ export function zoomOut(element, elementId, scale) {
     if (instance) {
         instance.options.scale -= scale;
 
-        resetAllPageElements(instance);
-        generateEmptyPage(instance, 1);
+        clearAllPageElements(instance);
+        generateEmptyPage(instance, instance.pageNum);
 
         let pageElements = instance.element.querySelectorAll('div > .b-pdf-page');
 
