@@ -386,7 +386,7 @@ export function zoomIn(element, elementId, scale) {
         if (pageElements) {
             pageElements.forEach(pageElement => {
                 if (pageElement && isVisible(pageElement)) {
-                    const pageNum = pageElement.dataset.pageNumber;
+                    const pageNum = parseInt(pageElement.dataset.pageNumber);
 
                     queueRenderPage(instance, pageNum);
                 }
@@ -415,7 +415,7 @@ export function zoomOut(element, elementId, scale) {
         if (pageElements) {
             pageElements.forEach(pageElement => {
                 if (pageElement && isVisible(pageElement)) {
-                    const pageNum = pageElement.dataset.pageNumber;
+                    const pageNum = parseInt(pageElement.dataset.pageNumber);
 
                     queueRenderPage(instance, pageNum);
                 }
