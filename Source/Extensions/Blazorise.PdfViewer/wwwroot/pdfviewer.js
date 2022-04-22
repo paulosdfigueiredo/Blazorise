@@ -5,7 +5,7 @@ document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend", "<link 
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = '_content/Blazorise.PdfViewer/vendors/pdf.worker.min.js';
 
-import { getRequiredElement } from "../Blazorise/utilities.js?v=1.0.3.0";
+import { getRequiredElement, focus } from "../Blazorise/utilities.js?v=1.0.3.0";
 
 const _instances = [];
 
@@ -93,7 +93,6 @@ function generateEmptyPage(instance, pageNum) {
         if (pageElement) {
             pageElement.height = viewport.height;
             pageElement.width = viewport.width;
-            pageElement.style.backgroundColor = "grey";
 
             const canvasElement = pageElement.querySelector('canvas.b-pdf-page-canvas');
 
@@ -107,6 +106,8 @@ function generateEmptyPage(instance, pageNum) {
                     renderPage(instance, pageNum);
                 }
             });
+
+            instance.pageNums.push(pageNum);
 
             let nextPageNum = pageNum + 1;
             if (nextPageNum <= instance.numPages) {
@@ -139,8 +140,8 @@ function getOrAddPageElement(instance, pageNum) {
         pageElement.dataset.pageNumber = pageNum;
         pageElement.dataset.loaded = false;
         pageElement.classList.add("b-pdf-page");
-        pageElement.style.display = "flex";
-        pageElement.style.alignSelf = "center";
+        //pageElement.style.display = "flex";
+        //pageElement.style.alignSelf = "center";
         instance.element.appendChild(pageElement);
 
         const canvasElement = document.createElement('canvas');
@@ -156,6 +157,22 @@ function getOrAddPageElement(instance, pageNum) {
     }
 
     return pageElement;
+}
+
+function getPageElement(instance, pageNum) {
+    return instance.element.querySelector('div[data-page-number="' + pageNum + '"]');
+}
+
+function getVisiblePageElement(instance) {
+    let pageElements = instance.element.querySelectorAll('div > .b-pdf-page');
+
+    for (const pageElement of pageElements) {
+        if (pageElement && isVisible(pageElement)) {
+            return pageElement;
+        }
+    }
+
+    return null;
 }
 
 function resetAllPageElements(instance) {
@@ -192,9 +209,8 @@ function renderPage(instance, pageNum) {
         const pageElement = getOrAddPageElement(instance, pageNum);
 
         if (pageElement) {
-            pageElement.height = viewport.height;
-            pageElement.width = viewport.width;
-            pageElement.style.backgroundColor = "grey";
+            pageElement.style.height = viewport.height + 'px';
+            pageElement.style.width = viewport.width + 'px';
 
             const canvasElement = pageElement.querySelector('canvas.b-pdf-page-canvas');
 
@@ -244,8 +260,6 @@ function renderPage(instance, pageNum) {
 
                 pageElement.dataset.loaded = true;
 
-                instance.pageNums.push(pageNum);
-
                 if (instance.dotNetObjectRef) {
                     instance.dotNetObjectRef.invokeMethodAsync('NotifyPage', pageNum);
                 }
@@ -275,8 +289,18 @@ export function prevPage(element, elementId) {
         if (instance.pageNum <= 1) {
             return;
         }
-        instance.pageNum--;
-        queueRenderPage(instance, instance.pageNum);
+
+        const prefPageNum = instance.pageNum - 1;
+
+        const pageElement = getPageElement(instance, prefPageNum)
+
+        if (pageElement) {
+            pageElement.scrollIntoView(false);
+            instance.pageNum = prefPageNum;
+        }
+
+        //instance.pageNum--;
+        //queueRenderPage(instance, instance.pageNum);
     }
 }
 
@@ -293,8 +317,18 @@ export function nextPage(element, elementId) {
         if (instance.pageNum >= instance.pdf.numPages) {
             return;
         }
-        instance.pageNum++;
-        queueRenderPage(instance, instance.pageNum);
+
+        const nextPageNum = instance.pageNum + 1;
+
+        const pageElement = getPageElement(instance, nextPageNum)
+
+        if (pageElement) {
+            pageElement.scrollIntoView(false);
+            instance.pageNum = nextPageNum;
+        }
+
+        //instance.pageNum++;
+        //queueRenderPage(instance, instance.pageNum);
     }
 }
 

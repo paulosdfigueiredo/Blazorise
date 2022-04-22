@@ -1,28 +1,28 @@
 ﻿@inherits BaseComponent
 <CascadingValue Value="@this" IsFixed>
-    <Div Style="display: flex;flex-direction: column;position: relative;width: 100%;height: 100%;margin: 0;padding: 0;background-color: #f1f3f5;-webkit-font-smoothing: antialiased;overflow: hidden;">
+    <div>
         @if ( ShowToolbar )
         {
-            <Div Background="Background.Light" Style="display: flex;align-items: flex-end;width: 100%;z-index: 70;height: 40px;">
-                <Button Clicked="@OnToolbarPreviousPageClicked">
+            <Div Class="b-pdf-toolbar" Background="Background.Light" Style="display: flex;align-items: flex-end;width: 100%;z-index: 70;height: 40px;">
+                <Button Clicked="@OnToolbarPreviousPageClicked" Size="Size.Small">
                     <Icon Name="IconName.ArrowUp" />
                 </Button>
-                <Button Clicked="@OnToolbarNextPageClicked">
+                <Button Clicked="@OnToolbarNextPageClicked" Size="Size.Small">
                     <Icon Name="IconName.ArrowDown" />
                 </Button>
-                <Button Clicked="@OnToolbarZoomOutClicked">
+                <Button Clicked="@OnToolbarZoomOutClicked" Size="Size.Small">
                     <Icon Name="IconName.MinusCircle" />
                 </Button>
-                <Button Clicked="@OnToolbarZoomInClicked">
+                <Button Clicked="@OnToolbarZoomInClicked" Size="Size.Small">
                     <Icon Name="IconName.PlusCircle" />
                 </Button>
             </Div>
         }
-        <Div Style="display: flex;flex-direction: row;flex: 1;overflow: auto;">
-            <div style="width: calc(100% - 0px);margin-left: 0px;">
-                <div class="b-pdf-page" @ref="@ElementRef" id="@ElementId" style="display: flex; flex-direction: column;">
+        <div class="b-pdf-content">
+            <div class="b-pdf-document" style="width: calc(100% - 0px);margin-left: 0px;">
+                <div class="b-pdf-pages" @ref="@ElementRef" id="@ElementId">
                 </div>
             </div>
-        </Div>
-    </Div>
+        </div>
+    </div>
 </CascadingValue>
