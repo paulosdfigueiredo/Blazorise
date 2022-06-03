@@ -837,6 +837,71 @@ namespace Blazorise.Docs.Models
     }
 }";
 
+        public const string DragDropReorderingExample = @"@*<DropContainer TItem=""DropItem"" Items=""@items"" ItemsFilter=""@((item, dropZone) => item.Group == dropZone)"" ItemDropped=""@ItemDropped"" Flex=""Flex.Wrap.Grow.Is1"">
+    <ChildContent>
+        @for ( int i = 1; i < 4; i++ )
+        {
+            var dropzone = i.ToString();
+
+            <Card>
+                <CardBody>
+                    <ListGroup>
+                        <Heading Size=""HeadingSize.Is4"" Margin=""Margin.Is3.FromBottom"">Drop Zone @dropzone</Heading>
+                        <DropZone TItem=""DropItem"" Name=""@dropzone"" AllowReorder Padding=""Padding.Is3"" Margin=""Margin.Is3"" Flex=""Flex.Grow.Is1"" />
+                    </ListGroup>
+                </CardBody>
+            </Card>
+        }
+    </ChildContent>
+    <ItemTemplate>
+        <ListGroupItem>
+            @context.Name
+        </ListGroupItem>
+    </ItemTemplate>
+</DropContainer>*@
+
+<DropContainer TItem=""DropItem"" Items=""@items"" ItemsFilter=""@((item, dropZone) => item.Group == dropZone)"" ItemDropped=""@ItemDropped"" Flex=""Flex.Wrap.Grow.Is1"">
+    <ChildContent>
+        @for ( int i = 1; i < 4; i++ )
+        {
+            var dropzone = i.ToString();
+
+            <DropZone TItem=""DropItem"" Name=""@dropzone"" AllowReorder Padding=""Padding.Is3"" Margin=""Margin.Is3"" Flex=""Flex.Grow.Is1"">
+                <Heading Size=""HeadingSize.Is4"" Margin=""Margin.Is3.FromBottom"">Drop Zone @dropzone</Heading>
+            </DropZone>
+        }
+    </ChildContent>
+    <ItemTemplate>
+        <Card Shadow=""Shadow.Default"" Margin=""Margin.Is3.OnY"">
+            <CardBody>
+                @context.Name
+            </CardBody>
+        </Card>
+    </ItemTemplate>
+</DropContainer>
+@code {
+    public class DropItem
+    {
+        public string Name { get; init; }
+
+        public string Group { get; set; }
+    }
+
+    private List<DropItem> items = new()
+    {
+        new DropItem() { Name = ""Item 1"", Group = ""1"" },
+        new DropItem() { Name = ""Item 2"", Group = ""1"" },
+        new DropItem() { Name = ""Item 3"", Group = ""1"" },
+        new DropItem() { Name = ""Item 4"", Group = ""2"" },
+        new DropItem() { Name = ""Item 5"", Group = ""2"" },
+    };
+
+    private void ItemDropped( DraggableDroppedEventArgs<DropItem> dropItem )
+    {
+        dropItem.Item.Group = dropItem.DropZoneName;
+    }
+}";
+
         public const string DropdownExample = @"<Dropdown>
     <DropdownToggle Color=""Color.Primary"">
         Dropdown
@@ -1003,6 +1068,12 @@ namespace Blazorise.Docs.Models
     <FieldLabel ColumnSize=""ColumnSize.Is2"">Name</FieldLabel>
     <FieldBody ColumnSize=""ColumnSize.Is10"">
         <TextEdit Placeholder=""Some text value..."" />
+    </FieldBody>
+</Field>
+<Field Horizontal>
+    <FieldLabel ColumnSize=""ColumnSize.Is2"">Check me</FieldLabel>
+    <FieldBody ColumnSize=""ColumnSize.Is10"" Margin=""Margin.IsAuto"">
+        <Check TValue=""bool"" />
     </FieldBody>
 </Field>";
 
@@ -3806,6 +3877,77 @@ Proin volutpat, sapien ut facilisis ultricies, eros purus blandit velit, at ultr
     }
 }";
 
+        public const string DataGridContextMenuExample = @"@using System.Drawing
+
+<DataGrid @ref=""@dataGridRef""
+          TItem=""Employee""
+          Data=""@employeeList""
+          @bind-SelectedRow=""@selectedEmployee""
+          RowContextMenu=""@OnRowContextMenu""
+          RowContextMenuPreventDefault=""true""
+          Responsive
+          Editable>
+    <DataGridColumn Field=""@nameof(Employee.Id)"" Caption=""#"" Sortable=""false"" />
+    <DataGridColumn Field=""@nameof(Employee.FirstName)"" Caption=""First Name"" Editable />
+    <DataGridColumn Field=""@nameof(Employee.LastName)"" Caption=""Last Name"" Editable />
+    <DataGridColumn Field=""@nameof(Employee.Email)"" Caption=""Email"" Editable />
+</DataGrid>
+
+@if ( showContextMenu )
+{
+    <Div Position=""Position.Fixed"" Background=""Background.Danger"" Style=""@($""left:{contextMenuPos.X}px;top:{contextMenuPos.Y}px;"")"">
+        <ListGroup>
+            <ListGroupItem Clicked=""@(()=>OnContextItemEditClicked(contextMenuEmployee))"">
+                <Icon Name=""IconName.Edit"" TextColor=""TextColor.Secondary"" /> Edit
+            </ListGroupItem>
+            <ListGroupItem Clicked=""@(()=>OnContextItemDeleteClicked(contextMenuEmployee))"">
+                <Icon Name=""IconName.Delete"" TextColor=""TextColor.Danger"" /> Delete
+            </ListGroupItem>
+        </ListGroup>
+    </Div>
+}
+
+@code {
+    [Inject]
+    public EmployeeData EmployeeData { get; set; }
+    private List<Employee> employeeList;
+    private Employee selectedEmployee;
+    private DataGrid<Employee> dataGridRef;
+
+    bool showContextMenu = false;
+    Employee contextMenuEmployee;
+    Point contextMenuPos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeeList = await EmployeeData.GetDataAsync();
+        await base.OnInitializedAsync();
+    }
+
+    protected Task OnRowContextMenu( DataGridRowMouseEventArgs<Employee> eventArgs )
+    {
+        showContextMenu = true;
+        contextMenuEmployee = eventArgs.Item;
+        contextMenuPos = eventArgs.MouseEventArgs.Client;
+
+        return Task.CompletedTask;
+    }
+
+    protected async Task OnContextItemEditClicked( Employee employee )
+    {
+        await dataGridRef.Edit( employee );
+
+        showContextMenu = false;
+    }
+
+    protected async Task OnContextItemDeleteClicked( Employee employee )
+    {
+        await dataGridRef.Delete( employee );
+
+        showContextMenu = false;
+    }
+}";
+
         public const string DataGridCustomColumnFilteringExample = @"<DataGrid TItem=""Employee""
           Data=""@employeeList""
           Filterable
@@ -5113,7 +5255,8 @@ Proin volutpat, sapien ut facilisis ultricies, eros purus blandit velit, at ultr
     Snackbar snackbar;
 }";
 
-        public const string SnackbarImportsExample = @"@using Blazorise.Snackbar";
+        public const string SnackbarImportsExample = @"@using Blazorise.Components
+@using Blazorise.Snackbar";
 
         public const string SnackbarNugetInstallExample = @"Install-Package Blazorise.Snackbar";
 
@@ -5734,7 +5877,50 @@ builder.Services
     <NotFound>...</NotFound>
 </Router>
 
-<MessageAlert />";
+<MessageProvider />";
+
+        public const string ModalProviderInstantiationExample = @"<Button Color=""Color.Primary"" Clicked=""ShowCounter"">Show Counter</Button>
+
+@code {
+    [Inject] public IModalService ModalService { get; set; }
+
+    public Task ShowCounter()
+    {
+        Random random = new();
+        var newValue = random.NextInt64( 100 );
+        return ModalService.Show<Counter>( ""My Custom Content!"", x => x.Add( x => x.Value, newValue ) );
+    }
+}";
+
+        public const string ModalProviderOptionsExample = @"<Router AppAssembly=""typeof(App).Assembly"">
+    <Found>...</Found>
+    <NotFound>...</NotFound>
+</Router>
+
+<ModalProvider UseModalStructure Animated Size=""ModalSize.Fullscreen"" />";
+
+        public const string ModalProviderUsageExample = @"<Router AppAssembly=""typeof(App).Assembly"">
+    <Found>...</Found>
+    <NotFound>...</NotFound>
+</Router>
+
+<ModalProvider />";
+
+        public const string ModalServiceOptionsExample = @"<Button Clicked=""InstantiateModal""></Button>
+@code {
+
+    [Inject] public IModalService ModalService { get; set; }
+
+    public Task InstantiateModal()
+    {
+        return ModalService.Show<ModalServiceOptionsExample>( ""Override Options Example"", new ModalInstanceOptions()
+        {
+            Animated = false,
+            UseModalStructure = false,
+            Size = ModalSize.Small
+        } );
+    }
+}";
 
         public const string BasicNotificationServiceExample = @"<Button Color=""Color.Warning"" Clicked=""@ShowWarningNotification"">Show alert!</Button>
 
@@ -5754,7 +5940,7 @@ builder.Services
     <NotFound>...</NotFound>
 </Router>
 
-<NotificationAlert />";
+<NotificationProvider />";
 
         public const string BasicPageProgressServiceExample = @"<Button Color=""Color.Primary"" Clicked=""@SetPageProgress25"">25 %</Button>
 <Button Color=""Color.Primary"" Clicked=""@SetPageProgress50"">50 %</Button>
@@ -5805,7 +5991,7 @@ builder.Services
     <NotFound>...</NotFound>
 </Router>
 
-<PageProgressAlert />";
+<PageProgressProvider />";
 
         public const string ComponentsNugetInstallExample = @"Install-Package Blazorise.Components";
 
