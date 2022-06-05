@@ -2,6 +2,7 @@ import { PdfViewerBase } from "./PdfViewerBase.js";
 import { EventBus } from "./event-utils.js";
 import { RendererType, ScrollMode, SpreadMode } from "./ui-utils.js";
 import { PdfRenderingQueue } from "./PdfRenderingQueue.js";
+import { InvalidPdfException, MissingPdfException, UnexpectedResponseException } from "./base.js";
 
 class PdfViewer extends PdfViewerBase { }
 
@@ -83,9 +84,9 @@ export class PdfViewerApplication {
 
                 let key = "loading_error";
 
-                if (reason instanceof InvalidPDFException) {
+                if (reason instanceof InvalidPdfException) {
                     key = "invalid_file_error";
-                } else if (reason instanceof MissingPDFException) {
+                } else if (reason instanceof MissingPdfException) {
                     key = "missing_file_error";
                 } else if (reason instanceof UnexpectedResponseException) {
                     key = "unexpected_response_error";

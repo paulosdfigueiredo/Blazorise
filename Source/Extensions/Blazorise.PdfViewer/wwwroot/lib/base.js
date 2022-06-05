@@ -49,6 +49,46 @@ const SpreadMode = {
     EVEN: 2,
 };
 
+const BaseException = (function BaseExceptionClosure() {
+    function BaseException(message, name) {
+        if (this.constructor === BaseException) {
+            unreachable("Cannot initialize BaseException.");
+        }
+        this.message = message;
+        this.name = name;
+    }
+    BaseException.prototype = new Error();
+    BaseException.constructor = BaseException;
+
+    return BaseException;
+})();
+
+class UnknownErrorException extends BaseException {
+    constructor(msg, details) {
+        super(msg, "UnknownErrorException");
+        this.details = details;
+    }
+}
+
+class InvalidPdfException extends BaseException {
+    constructor(msg) {
+        super(msg, "InvalidPdfException");
+    }
+}
+
+class MissingPdfException extends BaseException {
+    constructor(msg) {
+        super(msg, "MissingPdfException");
+    }
+}
+
+class UnexpectedResponseException extends BaseException {
+    constructor(msg, status) {
+        super(msg, "UnexpectedResponseException");
+        this.status = status;
+    }
+}
+
 export {
     DEFAULT_SCALE_VALUE,
     DEFAULT_SCALE,
@@ -67,4 +107,9 @@ export {
     ScrollMode,
     PresentationModeState,
     SpreadMode,
+
+    UnknownErrorException,
+    InvalidPdfException,
+    MissingPdfException,
+    UnexpectedResponseException
 };
