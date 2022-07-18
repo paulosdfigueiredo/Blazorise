@@ -69,6 +69,45 @@ namespace Blazorise.Components
 
         #region Methods
 
+        protected async Task HandleReadData( CancellationToken cancellationToken = default )
+        {
+            try
+            {
+                Loading = true;
+
+                if ( !cancellationToken.IsCancellationRequested && IsTextSearchable )
+                    await ReadData.InvokeAsync( new( CurrentSearch, cancellationToken ) );
+            }
+            finally
+            {
+                Loading = false;
+
+                await InvokeAsync( StateHasChanged );
+            }
+        }
+
+        /// <summary>
+        /// Triggers the reload of the <see cref="Autocomplete{TItem, TValue}"/> data.
+        /// Makes sure not to reload if the <see cref="Autocomplete{TItem, TValue}"/> is in a loading state.
+        /// </summary>
+        /// <returns>Returns the awaitable task.</returns>
+        public async Task Reload( CancellationToken cancellationToken = default )
+        {
+            if ( Loading )
+                return;
+
+            dirtyFilter = true;
+
+            if ( ManualReadMode )
+            {
+                await InvokeAsync( () => HandleReadData( cancellationToken ) );
+            }
+            else
+            {
+                await InvokeAsync( StateHasChanged );
+            }
+        }
+
         /// <inheritdoc/>
         public override async Task SetParametersAsync( ParameterView parameters )
         {
@@ -154,13 +193,16 @@ namespace Blazorise.Components
         }
 
         /// <inheritdoc/>
-        protected override Task OnAfterRenderAsync( bool firstRender )
+        protected async override Task OnAfterRenderAsync( bool firstRender )
         {
             if ( firstRender )
             {
                 dotNetObjectRef ??= DotNetObjectReference.Create( new CloseActivatorAdapter( this ) );
+
+                if ( ManualReadMode )
+                    await Reload();
             }
-            return base.OnAfterRenderAsync( firstRender );
+            await base.OnAfterRenderAsync( firstRender );
         }
 
         /// <summary>
@@ -178,8 +220,14 @@ namespace Blazorise.Components
             if ( string.IsNullOrEmpty( text ) )
                 await Clear();
 
+            Loading = true;
             await SearchChanged.InvokeAsync( CurrentSearch );
+            Loading = false;
+
             await SelectedTextChanged.InvokeAsync( SelectedText );
+
+            if ( ManualReadMode )
+                await HandleReadData();
 
             if ( FilteredData?.Count == 0 && NotFound.HasDelegate )
                 await NotFound.InvokeAsync( CurrentSearch );
@@ -196,7 +244,7 @@ namespace Blazorise.Components
         {
             if ( !DropdownVisible )
             {
-                if ( ConfirmKey( eventArgs ) )
+                if ( IsConfirmKey( eventArgs ) )
                 {
                     if ( FreeTyping && Multiple )
                     {
@@ -204,7 +252,9 @@ namespace Blazorise.Components
                         await ResetSelectedText();
                     }
                 }
+
                 await UnregisterClosableComponent();
+
                 return;
             }
 
@@ -213,9 +263,9 @@ namespace Blazorise.Components
 
             var activeItemIndex = ActiveItemIndex;
 
-            if ( ConfirmKey( eventArgs ) )
+            if ( IsConfirmKey( eventArgs ) )
             {
-                var item = FilteredData.ElementAtOrDefault( activeItemIndex );
+                var item = FilteredData.ElementAtOrDefault( ActiveItemIndex ?? -1 );
 
                 if ( item != null && ValueField != null )
                     await OnDropdownItemClicked( ValueField.Invoke( item ) );
@@ -228,11 +278,11 @@ namespace Blazorise.Components
             }
             else if ( eventArgs.Code == "ArrowUp" )
             {
-                await UpdateActiveFilterIndex( --activeItemIndex );
+                await UpdateActiveFilterIndex( ( ActiveItemIndex ?? -1 ) - 1 );
             }
             else if ( eventArgs.Code == "ArrowDown" )
             {
-                await UpdateActiveFilterIndex( ++activeItemIndex );
+                await UpdateActiveFilterIndex( ( ActiveItemIndex ?? -1 ) + 1 );
             }
         }
 
@@ -282,7 +332,9 @@ namespace Blazorise.Components
             else
             {
                 CurrentSearch = null;
+                Loading = true;
                 await SearchChanged.InvokeAsync( CurrentSearch );
+                Loading = false;
             }
 
             SelectedValue = Converters.ChangeType<TValue>( value );
@@ -309,11 +361,13 @@ namespace Blazorise.Components
             }
         }
 
-        private static bool ConfirmKey( KeyboardEventArgs eventArgs )
+        private bool IsConfirmKey( KeyboardEventArgs eventArgs )
         {
-            return eventArgs.Code == "Enter" || eventArgs.Code == "NumpadEnter" || eventArgs.Code == "Tab";
-        }
+            if ( ConfirmKey.IsNullOrEmpty() )
+                return false;
 
+            return ConfirmKey.Contains( eventArgs.Code );
+        }
 
         private bool ShouldNotClose()
             => Multiple && !CloseOnSelection && !closeOnSelectionAllowClose && filteredData.Count > 0;
@@ -403,35 +457,38 @@ namespace Blazorise.Components
             if ( TextField == null )
                 return;
 
-            if ( Multiple )
-                query = query.Where( x => !SelectedValues.Contains( ValueField.Invoke( x ) ) );
+            if ( !ManualReadMode )
+            {
+                if ( Multiple )
+                    query = query.Where( x => !SelectedValues.Contains( ValueField.Invoke( x ) ) );
 
-            var currentSearch = CurrentSearch ?? string.Empty;
+                var currentSearch = CurrentSearch ?? string.Empty;
 
-            if ( CustomFilter != null )
-            {
-                query = from q in query
-                        where q != null
-                        where CustomFilter( q, currentSearch )
-                        select q;
-            }
-            else if ( Filter == AutocompleteFilter.Contains )
-            {
-                query = from q in query
-                        let text = GetItemText( q )
-                        where text.IndexOf( currentSearch, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0
-                        select q;
-            }
-            else
-            {
-                query = from q in query
-                        let text = GetItemText( q )
-                        where text.StartsWith( currentSearch, StringComparison.OrdinalIgnoreCase )
-                        select q;
+                if ( CustomFilter != null )
+                {
+                    query = from q in query
+                            where q != null
+                            where CustomFilter( q, currentSearch )
+                            select q;
+                }
+                else if ( Filter == AutocompleteFilter.Contains )
+                {
+                    query = from q in query
+                            let text = GetItemText( q )
+                            where text.IndexOf( currentSearch, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0
+                            select q;
+                }
+                else
+                {
+                    query = from q in query
+                            let text = GetItemText( q )
+                            where text.StartsWith( currentSearch, StringComparison.OrdinalIgnoreCase )
+                            select q;
+                }
             }
 
             filteredData = query.ToList();
-            ActiveItemIndex = 0;
+            ActiveItemIndex = AutoSelectFirstItem ? 0 : null;
 
             dirtyFilter = false;
         }
@@ -464,7 +521,7 @@ namespace Blazorise.Components
             // update search text with the currently focused item text
             if ( FilteredData.Count > 0 && ActiveItemIndex >= 0 && ActiveItemIndex <= ( FilteredData.Count - 1 ) )
             {
-                var item = FilteredData[ActiveItemIndex];
+                var item = FilteredData[ActiveItemIndex.Value];
 
                 SelectedText = GetItemText( item );
                 await SelectedTextChanged.InvokeAsync( SelectedText );
@@ -494,11 +551,8 @@ namespace Blazorise.Components
         }
 
         /// <inheritdoc/>
-        public async Task Close( CloseReason closeReason )
-        {
-            await Clear();
-            await UnregisterClosableComponent();
-        }
+        public Task Close( CloseReason closeReason )
+            => UnregisterClosableComponent();
 
         /// <summary>
         /// Unregisters the closable component.
@@ -582,6 +636,16 @@ namespace Blazorise.Components
         #region Properties
 
         /// <summary>
+        /// True if user is using <see cref="ReadData"/> for loading the data.
+        /// </summary>
+        public bool ManualReadMode => ReadData.HasDelegate;
+
+        /// <summary>
+        /// Returns true if ReadData will be invoked.
+        /// </summary>
+        protected bool Loading { get; set; }
+
+        /// <summary>
         /// Gets the DropdownMenu reference.
         /// </summary>
         public DropdownMenu DropdownMenuRef { get; set; }
@@ -623,7 +687,7 @@ namespace Blazorise.Components
         /// <summary>
         /// Gets or sets the currently active item index.
         /// </summary>
-        protected int ActiveItemIndex { get; set; }
+        protected int? ActiveItemIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the search field focus state.
@@ -641,7 +705,7 @@ namespace Blazorise.Components
         /// True if the not found content should be visible.
         /// </summary>
         protected bool NotFoundVisible
-            => FilteredData?.Count == 0 && IsTextSearchable && TextFocused && NotFoundContent != null;
+            => FilteredData?.Count == 0 && IsTextSearchable && TextFocused && NotFoundContent != null && !Loading;
 
         /// <summary>
         /// True if the component has the pre-requirements to search
@@ -719,6 +783,11 @@ namespace Blazorise.Components
                 dirtyFilter = true;
             }
         }
+
+        /// <summary>
+        /// Event handler used to load data manually based on the current search value.
+        /// </summary>
+        [Parameter] public EventCallback<AutocompleteReadDataEventArgs> ReadData { get; set; }
 
         /// <summary>
         /// Gets the data after all of the filters have being applied.
@@ -898,12 +967,28 @@ namespace Blazorise.Components
         /// </summary>
         [Parameter] public RenderFragment<ItemContext<TItem, TValue>> ItemContent { get; set; }
 
-
         /// <summary>
         /// Specifies whether <see cref="Autocomplete{TItem, TValue}"/> dropdown closes on selection. This is only evaluated when the <see cref="Multiple"/> is set to true.
         /// Defauls to true.
         /// </summary>
         [Parameter] public bool CloseOnSelection { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets an array of the keyboard pressed values for the ConfirmKey.
+        /// If this is null or empty, there will be no confirmation key.
+        /// <para>Defauls to: { "Enter", "NumpadEnter", "Tab" }.</para>
+        /// </summary>
+        /// <remarks>
+        /// If the value has a printed representation, this attribute's value is the same as the char attribute.
+        /// Otherwise, it's one of the key value strings specified in 'Key values'.
+        /// </remarks>
+        [Parameter] public string[] ConfirmKey { get; set; } = new[] { "Enter", "NumpadEnter", "Tab" };
+
+        /// <summary>
+        /// Gets or sets whether <see cref="Autocomplete{TItem, TValue}"/> auto selects the first item displayed on the dropdown.
+        /// Defauls to true.
+        /// </summary>
+        [Parameter] public bool AutoSelectFirstItem { get; set; } = true;
 
         #endregion
     }

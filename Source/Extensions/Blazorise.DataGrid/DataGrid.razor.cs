@@ -253,7 +253,7 @@ namespace Blazorise.DataGrid
                 paginationContext.SubscribeOnPageSizeChanged( OnPageSizeChanged );
                 paginationContext.SubscribeOnPageChanged( OnPageChanged );
 
-                if( ManualReadMode || VirtualizeManualReadMode )
+                if ( ManualReadMode || VirtualizeManualReadMode )
                     await Reload();
 
                 return;
@@ -335,7 +335,7 @@ namespace Blazorise.DataGrid
             {
                 VirtualizeOptions ??= new();
 
-                if ( editState == DataGridEditState.Edit && EditMode != DataGridEditMode.Popup )
+                if ( editState == DataGridEditState.Edit && EditMode != DataGridEditMode.Popup && VirtualizeOptions.ScrollRowOnEdit )
                     virtualizeState.EditLastKnownScroll = await JSModule.ScrollTo( tableRef.ElementRef, ClassProvider.TableRowHoverCursor() );
             }
             else
@@ -1059,6 +1059,7 @@ namespace Blazorise.DataGrid
                 : request.Count;
 
             await HandleVirtualizeReadData( request.StartIndex, requestCount, request.CancellationToken );
+            await Task.Yield(); // This line makes sure SetParametersAsync catches up, since we depend upon Data Parameter.
 
             if ( request.CancellationToken.IsCancellationRequested )
                 return new();
@@ -1087,10 +1088,15 @@ namespace Blazorise.DataGrid
 
                 if ( !SortByColumns.Any( c => c.GetFieldToSort() == column.GetFieldToSort() ) )
                 {
+                    var nextOrderToSort = SortByColumns.Count == 0 ? 0 : SortByColumns.Max( x => x.SortOrder ) + 1;
+                    column.SetSortOrder( nextOrderToSort );
                     SortByColumns.Add( column );
                 }
                 else if ( column.CurrentSortDirection == SortDirection.Default )
+                {
                     SortByColumns.Remove( column );
+                    column.ResetSortOrder();
+                }
 
                 if ( changeSortDirection )
                     InvokeAsync( () => SortChanged.InvokeAsync( new DataGridSortChangedEventArgs( column.GetFieldToSort(), column.CurrentSortDirection ) ) );
@@ -1158,7 +1164,7 @@ namespace Blazorise.DataGrid
             {
                 var firstSort = true;
 
-                foreach ( var sortByColumn in SortByColumns )
+                foreach ( var sortByColumn in SortByColumns.OrderBy( x => x.SortOrder ) )
                 {
                     Func<TItem, object> sortFunction = sortByColumn.GetValueForSort;
 
@@ -1293,6 +1299,9 @@ namespace Blazorise.DataGrid
         /// </summary>
         [Inject] public IJSUtilitiesModule JSUtilitiesModule { get; set; }
 
+        internal bool IsFixedHeader
+            => Virtualize || FixedHeader;
+
         /// <summary>
         /// Gets the DataGrid standard class and other existing Class
         /// </summary>
@@ -1310,7 +1319,6 @@ namespace Blazorise.DataGrid
                 return sb.ToString();
             }
         }
-
 
         /// <summary>
         /// Gets the data to show on grid based on the filter and current page.
