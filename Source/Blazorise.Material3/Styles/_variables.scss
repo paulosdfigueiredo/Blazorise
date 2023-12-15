@@ -1,0 +1,10 @@
+﻿// defines the prefix for all classnames
+$prefix: '';
+
+:root {
+    --primary: #386a1f;
+    --on-primary: #ffffff;
+}
+
+$primary: var(--primary);
+$on-primary: var(--on-primary);

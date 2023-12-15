@@ -1,0 +1,42 @@
+﻿a, button {
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    font-family: inherit;
+    outline: inherit;
+    justify-content: center
+}
+
+.#{$prefix}button {
+    box-sizing: content-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 2.5rem;
+    min-inline-size: 2.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $on-primary;
+    padding: 0 1.5rem;
+    background-color: $primary;
+    margin: 0 0.5rem;
+    border-radius: 1.25rem;
+    /*transition: var(--speed3) transform, var(--speed3) border-radius, var(--speed3) padding;*/
+    user-select: none;
+    gap: 1rem;
+    line-height: normal;
+    background-position: center;
+    transition: background 0.8s;
+
+    &:hover {
+        background: green radial-gradient(circle, transparent 1%, green 1%) center/15000%;
+    }
+
+    &:active {
+        background-color: #53a929;
+        background-size: 100%;
+        transition: background 0s;
+    }
+}

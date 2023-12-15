@@ -383,7 +383,7 @@ public class Material3ClassProvider : ClassProvider
 
     #region Button
 
-    public override string Button( bool outline ) => "btn";
+    public override string Button( bool outline ) => "button";
 
     public override string ButtonColor( Color color, bool outline ) => outline
         ? color != Color.Default ? $"{Button( outline )}-outline-{ToColor( color )}" : $"{Button( outline )}-outline"
