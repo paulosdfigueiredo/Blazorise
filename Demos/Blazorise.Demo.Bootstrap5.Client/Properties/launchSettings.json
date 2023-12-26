@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Blazorise.Demo.Bootstrap5.Client": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:51845;http://localhost:51846"
+    }
+  }
+}

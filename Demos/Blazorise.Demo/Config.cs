@@ -26,7 +26,7 @@ public static class Config
             .AddLoadingIndicator()
             .AddBlazoriseFluentValidation();
 
-        services.AddValidatorsFromAssembly( typeof( App ).Assembly );
+        services.AddValidatorsFromAssembly( typeof( Routes ).Assembly );
 
         services.AddMemoryCache();
 

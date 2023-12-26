@@ -1,9 +1,5 @@
-﻿@*
-    The Router component displays whichever component has a @page
-    directive matching the current URI.
-*@
-<Blazorise.ThemeProvider Theme="@theme">
-    <Router AppAssembly="typeof(App).Assembly">
+﻿<Blazorise.ThemeProvider Theme="@theme">
+    <Router AppAssembly="typeof(Routes).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
         </Found>
@@ -28,9 +24,6 @@
         BreakpointOptions = new()
         {
         },
-        //SpacingOptions = new()
-        //{
-        //},
         ColorOptions = new()
         {
             Primary = "#3b82f6",
@@ -64,26 +57,9 @@
             Light = "#F3F4F6",
             Dark = "#1F2937",
         },
-        //ButtonOptions = new ThemeButtonOptions { },
-        //DropdownOptions = new ThemeDropdownOptions { },
         InputOptions = new()
         {
             CheckColor = "#0288D1",
         },
-        //CardOptions = new ThemeCardOptions { },
-        //ModalOptions = new ThemeModalOptions { },
-        //TabsOptions = new ThemeTabsOptions { },
-        //ProgressOptions = new ThemeProgressOptions { },
-        //AlertOptions = new ThemeAlertOptions { },
-        //BreadcrumbOptions = new ThemeBreadcrumbOptions { },
-        //BadgeOptions = new ThemeBadgeOptions { },
-        //PaginationOptions = new ThemePaginationOptions { },
-        //TooltipOptions = new ThemeTooltipOptions
-        //{
-        //    BackgroundColor = "#22c8ce",
-        //    BackgroundOpacity = .7f,
-        //    Color = "#ff0000",
-        //},
     };
-
 }
