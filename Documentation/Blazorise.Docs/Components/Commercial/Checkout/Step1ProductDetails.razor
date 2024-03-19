@@ -1,0 +1,27 @@
+﻿@page "/checkout/product-details"
+
+<Seo Canonical="/checkout/product-details" Title="Blazorise Checkout - Product Details" Description="Purchase Blazorise components for every type of project across major development platforms. Dynamic release cycle and best support service." />
+
+<PageHeader>
+    <Title>
+        Blazorise <Span Class="gradient-commercial">Checkout</Span>
+    </Title>
+    <Subtitle>
+        If you have any questions or require assistance, email us at .
+    </Subtitle>
+    @* <Description>
+    <Paragraph>
+    Be a part of the most reliable and developer focused Blazor library in the world.
+    </Paragraph>
+    </Description> *@
+</PageHeader>
+
+<Container TextAlignment="TextAlignment.Center">
+    <Card>
+        <CardBody>
+            <Strong>@PricingService.GetProduct( ProductId )?.Name</Strong>
+        </CardBody><CardBody>
+            <Strong>Quantity: @Quantity</Strong>
+        </CardBody>
+    </Card>
+</Container>

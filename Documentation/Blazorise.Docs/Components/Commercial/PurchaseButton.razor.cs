@@ -1,29 +1,30 @@
 ﻿#region Using directives
 using System.Threading.Tasks;
+using Blazorise.Docs.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 #endregion
 
 namespace Blazorise.Docs.Components.Commercial;
 
 public partial class PurchaseButton
 {
-    #region Members
-
-    #endregion
-
     #region Methods
 
     async Task OnPurchaseClicked()
     {
-        await JSRuntime.InvokeVoidAsync( "blazorisePRO.paddle.openCheckout", ProductId, Quantity, Upsell );
+        await CheckoutService.SetProductId( ProductId );
+        await CheckoutService.SetQuantity( Quantity );
+
+        NavigationManager.NavigateTo( "checkout/product-details" );
     }
 
     #endregion
 
     #region Properties
 
-    [Inject] IJSRuntime JSRuntime { get; set; }
+    [Inject] CheckoutService CheckoutService { get; set; }
+
+    [Inject] NavigationManager NavigationManager { get; set; }
 
     [Parameter] public Color Color { get; set; }
 

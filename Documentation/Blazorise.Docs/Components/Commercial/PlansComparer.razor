@@ -23,7 +23,7 @@
                         Professional
                     </Div>
                     <Div Padding="Padding.Is2.OnY">
-                        <Span>@($"${( ProfessionalPrices[Plan].Price * Quantity ).ToString( CultureInfo.InvariantCulture )}")</Span><Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">/@ProfessionalPrices[Plan].Unit</Small>
+                        <Span>@($"${PricingService.GetTotal( Plan, "Professional", Quantity )}")</Span><Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">/@PricingService.GetUnit( Plan, "Professional" )</Small>
                     </Div>
                 </Div>
             </TableHeaderCell>
@@ -33,7 +33,7 @@
                     Enterprise
                     </Div>
                     <Div Padding="Padding.Is2.OnY">
-                        <Span>@($"${( EnterprisePrices[Plan].Price * Quantity ).ToString( CultureInfo.InvariantCulture )}")</Span><Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">/@ProfessionalPrices[Plan].Unit</Small>
+                        <Span>@($"${PricingService.GetTotal( Plan, "Enterprise", Quantity )}")</Span><Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">/@PricingService.GetUnit( Plan, "Enterprise" )</Small>
                     </Div>
                 </Div>
             </TableHeaderCell>

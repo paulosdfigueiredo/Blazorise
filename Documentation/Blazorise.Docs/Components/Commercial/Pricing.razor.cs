@@ -1,24 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Blazorise.Docs.Models;
+﻿using System.Threading.Tasks;
+using Blazorise.Docs.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using static Blazorise.Docs.Pages.Commercial.PricingPage;
 
 namespace Blazorise.Docs.Components.Commercial;
 
 public partial class Pricing
 {
-
-
     protected async Task OnProfessionalClicked()
     {
-        await JSRuntime.InvokeVoidAsync( "blazorisePRO.paddle.openCheckout", ProfessionalPrices[Plan].ProductId, Quantity, ProfessionalPrices[Plan].Upsell );
+        await JSRuntime.InvokeVoidAsync( "blazorisePRO.paddle.openCheckout", PricingService.GetProductId( Plan, "Professional" ), Quantity );
     }
 
     protected async Task OnEnterpriseClicked()
     {
-        await JSRuntime.InvokeVoidAsync( "blazorisePRO.paddle.openCheckout", EnterprisePrices[Plan].ProductId, Quantity );
+        await JSRuntime.InvokeVoidAsync( "blazorisePRO.paddle.openCheckout", PricingService.GetProductId( Plan, "Enterprise" ), Quantity );
     }
 
     Task OnProductOrderClicked()
@@ -32,6 +28,8 @@ public partial class Pricing
 
     [Inject] NavigationManager NavigationManager { get; set; }
 
+    [Inject] PricingService PricingService { get; set; }
+
     [Parameter] public int Quantity { get; set; }
 
     [Parameter] public EventCallback<int> QuantityChanged { get; set; }
@@ -39,8 +37,4 @@ public partial class Pricing
     [Parameter] public string Plan { get; set; }
 
     [Parameter] public EventCallback<string> PlanChanged { get; set; }
-
-    [Parameter] public Dictionary<string, PriceInfo> ProfessionalPrices { get; set; }
-
-    [Parameter] public Dictionary<string, PriceInfo> EnterprisePrices { get; set; }
 }
