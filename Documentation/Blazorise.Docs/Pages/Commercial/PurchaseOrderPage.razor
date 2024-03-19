@@ -23,7 +23,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is8.OnDesktop">
-                                    <FieldLabel>Product</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Product</FieldLabel>
                                     <FieldBody>
                                         <Select TValue="string" @bind-SelectedValue="@InputModel.Product">
                                             <ChildContent>
@@ -42,7 +42,7 @@
                             </Validation>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                                    <FieldLabel Flex="Flex.InlineFlex.JustifyContent.Between.AlignItems.Center" Width="Width.Is100">
+                                    <FieldLabel RequiredIndicator Flex="Flex.InlineFlex.JustifyContent.Between.AlignItems.Center" Width="Width.Is100">
                                         <Span>
                                             Quantity
                                         </Span>
@@ -63,7 +63,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is12">
-                                    <FieldLabel>Full Name</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Full Name</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.FullName">
                                             <Feedback>
@@ -77,7 +77,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                                    <FieldLabel>Work Email</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Work Email</FieldLabel>
                                     <FieldBody>
                                         <TextEdit Role="TextRole.Email" @bind-Text="@InputModel.Email">
                                             <Feedback>
@@ -88,7 +88,7 @@
                                 </Field>
                             </Validation>
                             <Field ColumnSize="ColumnSize.Is6.OnDesktop">
-                                <FieldLabel>Phone</FieldLabel>
+                                <FieldLabel RequiredIndicator>Phone</FieldLabel>
                                 <FieldBody>
                                     <TextEdit @bind-Text="@InputModel.PhoneNumber" Placeholder="(xx) xxx xxx xxx">
                                         <Feedback>
@@ -101,7 +101,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is8.OnDesktop">
-                                    <FieldLabel>Company Name</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Company Name</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.Company">
                                             <Feedback>
@@ -113,7 +113,7 @@
                             </Validation>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                                    <FieldLabel>VAT / TAX Number</FieldLabel>
+                                    <FieldLabel RequiredIndicator>VAT / TAX Number</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.VAT">
                                             <Feedback>
@@ -127,7 +127,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is12">
-                                    <FieldLabel>Address</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Address</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.Address">
                                             <Feedback>
@@ -149,7 +149,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is12">
-                                    <FieldLabel>Country</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Country</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.Country">
                                             <Feedback>
@@ -163,7 +163,7 @@
                         <Fields>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                                    <FieldLabel>Town / City</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Town / City</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.City">
                                             <Feedback>
@@ -175,7 +175,7 @@
                             </Validation>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                                    <FieldLabel>State / Region</FieldLabel>
+                                    <FieldLabel RequiredIndicator>State / Region</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.State">
                                             <Feedback>
@@ -187,7 +187,7 @@
                             </Validation>
                             <Validation>
                                 <Field ColumnSize="ColumnSize.Is4.OnDesktop">
-                                    <FieldLabel>Zip / Postal Code</FieldLabel>
+                                    <FieldLabel RequiredIndicator>Zip / Postal Code</FieldLabel>
                                     <FieldBody>
                                         <TextEdit @bind-Text="@InputModel.Zip">
                                             <Feedback>
