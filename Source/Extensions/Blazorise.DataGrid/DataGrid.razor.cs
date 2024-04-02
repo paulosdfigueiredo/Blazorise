@@ -1675,6 +1675,8 @@ public partial class DataGrid<TItem> : BaseDataGridComponent
         if ( !IsCellEdit )
             return;
 
+        await SelectRow( item, true );
+
         var batchEditItem = BatchEdit
             ? GetBatchEditItemByLastEditItem( item ) ?? GetBatchEditItemByOriginal( item )
             : null;
@@ -2493,9 +2495,9 @@ public partial class DataGrid<TItem> : BaseDataGridComponent
         return filteredData;
     }
 
-    private Task SelectRow( TItem item )
+    private Task SelectRow( TItem item, bool forceSelect = false )
     {
-        if ( editState != DataGridEditState.None )
+        if ( editState != DataGridEditState.None && !forceSelect )
             return Task.CompletedTask;
 
         SelectedRow = item;
@@ -2749,7 +2751,7 @@ public partial class DataGrid<TItem> : BaseDataGridComponent
     /// Returns true if ShowPager is true and grid is not empty or loading.
     /// </summary>
     protected bool IsPagerVisible
-        => ShowPager && !IsLoadingTemplateVisible && ( ( IsButtonRowVisible && ButtonRowTemplate != null ) || !IsEmptyTemplateVisible );
+        => ( ShowPager || ShowColumnChooser ) && !IsLoadingTemplateVisible && ( ( IsButtonRowVisible && ButtonRowTemplate != null ) || !IsEmptyTemplateVisible );
 
     /// <summary>
     /// Returns true if current state is for new item and editing fields are shown on datagrid.
