@@ -24,4 +24,9 @@ public enum VideoProtectionType
     /// Video is protected with FairPlay.
     /// </summary>
     FairPlay,
+
+    /// <summary>
+    /// Video is protected with ClearKey.
+    /// </summary>
+    ClearKey,
 }

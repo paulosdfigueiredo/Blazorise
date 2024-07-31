@@ -19,6 +19,7 @@ internal static class Extensions
             VideoProtectionType.PlayReady => "PlayReady",
             VideoProtectionType.Widevine => "Widevine",
             VideoProtectionType.FairPlay => "FairPlay",
+            VideoProtectionType.ClearKey => "ClearKey",
             _ => null,
         };
     }

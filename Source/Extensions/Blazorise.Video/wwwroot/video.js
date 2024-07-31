@@ -442,6 +442,14 @@ function applyHlsProtectionData(hls, protection) {
                 }
             };
         }
+        else if (protection.type === "ClearKey") {
+            hls.config.emeEnabled = true;
+            hls.config.drmSystems = {
+                'org.w3.clearkey': {
+                    httpRequestHeaders: { 'Authorization:': 'Bearer="KEYHERE"' }
+                }
+            };
+        }
     }
 }
 
