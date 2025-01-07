@@ -34,9 +34,10 @@ jobs:
         dotnet-version: '9.0.x'
         include-prerelease: true
 
-    - name: Restore NuGet Packages
-      run: dotnet restore
+
       
     - name: test compiler proj
-      run: dotnet build --configuration Release --no-restore Documentation/Blazorise.Docs.Compiler
+      run: |
+            cd Documentation/Blazorise.Docs.Compiler
+            dotnet run 
       
