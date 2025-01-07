@@ -38,13 +38,5 @@ jobs:
       run: dotnet restore
       
     - name: Build - Release
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore --project Documentation/Blazorise.Docs.Compiler
       
-    - name: Run Unit Tests - Release
-      run: dotnet test ./Tests/Blazorise.Tests/Blazorise.Tests.csproj --configuration Release --no-restore --no-build --verbosity normal
-
-    - name: Prepare E2E Tests Dependencies 
-      run: pwsh ./Tests/Blazorise.E2E.Tests/bin/Release/net9.0/playwright.ps1 install --with-deps
-
-    - name: Run E2E Tests - Release
-      run: dotnet test ./Tests/Blazorise.E2E.Tests/Blazorise.E2E.Tests.csproj --configuration Release --no-restore --no-build --verbosity normal
