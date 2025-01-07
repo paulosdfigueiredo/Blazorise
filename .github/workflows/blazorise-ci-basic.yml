@@ -37,6 +37,6 @@ jobs:
     - name: Restore NuGet Packages
       run: dotnet restore
       
-    - name: Build - Release
-      run: dotnet build --configuration Release --no-restore --project Documentation/Blazorise.Docs.Compiler
+    - name: test compiler proj
+      run: dotnet build --configuration Release --no-restore Documentation/Blazorise.Docs.Compiler
       
