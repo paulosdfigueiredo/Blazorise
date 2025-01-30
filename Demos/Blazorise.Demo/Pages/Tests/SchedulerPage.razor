@@ -1,0 +1,23 @@
+﻿@page "/tests/scheduler"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Scheduler</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Scheduler>
+                    <SchedulerToolbar />
+                    <SchedulerViews>
+                        <SchedulerView />
+                    </SchedulerViews>
+                </Scheduler>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    SplitterDirection direction = SplitterDirection.Horizontal;
+    double minSize = 10;
+    double gutterSize = 10;
+}
