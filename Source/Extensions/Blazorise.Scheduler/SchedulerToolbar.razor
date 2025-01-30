@@ -1,4 +1,16 @@
 ﻿@inherits BaseComponent
-<Div Class="@ClassNames" Style="@StyleNames">
+<Div Class="@ClassNames" Style="@StyleNames" Background="Blazorise.Background.Light" Padding="Blazorise.Padding.Is3">
+    <Buttons>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline>
+            Today
+        </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline>
+            <Icon Name="IconName.ChevronLeft" />
+        </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline>
+            <Icon Name="IconName.ChevronRight" />
+        </Button>
+    </Buttons>
+
     @ChildContent
 </Div>
