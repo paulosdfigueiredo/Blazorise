@@ -1,4 +1,4 @@
-﻿<Div Class="b-scheduler-row" Flex="Blazorise.Flex.Default.Grow.Is1.Shrink.Is1" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom">
+﻿<Div Class="b-scheduler-row" Flex="Blazorise.Flex.Default.Grow.Is1.Shrink.Is1" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart">
     <Div Class="b-scheduler-row-cell" Padding="Blazorise.Padding.Is3" Width="Blazorise.Width.Is100" @onclick="@(() => Console.WriteLine( $"item click: {Date}:{Hour}" ))">
         @foreach ( var appointment in Appointments ?? Enumerable.Empty<SchedulerAppointment>() )
         {

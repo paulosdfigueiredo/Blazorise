@@ -1,4 +1,15 @@
 ﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
+    @if ( ShowDayHeader )
+    {
+        <Div Flex="Blazorise.Flex.Column" Padding="Blazorise.Padding.Is1" TextAlignment="TextAlignment.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
+            <Span TextWeight="TextWeight.Bold">
+                @Date?.ToString( "dddd" )
+            </Span>
+            <Span TextColor="TextColor.Muted">
+                @Date?.ToString( "MMM dd" )
+            </Span>
+        </Div>
+    }
     @for ( int hour = ( StartTime?.Hour ?? 0 ); hour <= ( EndTime?.Hour ?? 24 ); ++hour )
     {
         <_SchedulerDay @key="@hour" Date="@Date" Hour="@hour" />
@@ -10,4 +21,6 @@
     [Parameter] public TimeOnly? StartTime { get; set; }
 
     [Parameter] public TimeOnly? EndTime { get; set; }
+
+    [Parameter] public bool ShowDayHeader { get; set; }
 }
