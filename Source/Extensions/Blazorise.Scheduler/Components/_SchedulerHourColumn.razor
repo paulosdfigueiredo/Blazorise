@@ -1,0 +1,17 @@
+﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
+    @for ( int hour = ( StartTime?.Hour ?? 0 ); hour <= ( EndTime?.Hour ?? 24 ); ++hour )
+    {
+        int tempHour = hour;
+
+        <Div Class="b-scheduler-row" Flex="Blazorise.Flex.Default.Grow.Is1.Shrink.Is1" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom">
+            <_SchedulerHour Hour="@tempHour" />
+        </Div>
+    }
+</Div>
+@code {
+    [Parameter] public DateTime? SelectedDate { get; set; }
+
+    [Parameter] public TimeOnly? StartTime { get; set; }
+
+    [Parameter] public TimeOnly? EndTime { get; set; }
+}

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise.Scheduler.Components;
 
-public partial class _SchedulerRow
+public partial class _SchedulerCell
 {
     #region Members
 
@@ -18,8 +18,6 @@ public partial class _SchedulerRow
     #endregion
 
     #region Properties
-
-    string HourString => $"{Hour.ToString().PadLeft( 2, '0' )}:00";
 
     IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments
         ?.Where( x => x.Start.Year == SelectedDate?.Year && x.Start.Month == SelectedDate?.Month && x.Start.Day == SelectedDate?.Day && x.Start.Hour == Hour );

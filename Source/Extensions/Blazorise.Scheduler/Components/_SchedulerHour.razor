@@ -1,0 +1,8 @@
+﻿<Div Class="b-scheduler-row-header" TextWeight="Blazorise.TextWeight.Bold" Padding="Blazorise.Padding.Is3">
+    @HourString
+</Div>
+@code {
+    string HourString => $"{Hour.ToString().PadLeft( 2, '0' )}:00";
+
+    [Parameter] public int Hour { get; set; }
+}
