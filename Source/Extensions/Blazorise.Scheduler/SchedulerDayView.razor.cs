@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise.Scheduler;
 
-public partial class SchedulerView
+public partial class SchedulerDayView
 {
     #region Members
 

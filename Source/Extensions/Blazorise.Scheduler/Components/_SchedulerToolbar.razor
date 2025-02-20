@@ -13,14 +13,14 @@
     </Buttons>
 
     <Span TextWeight="TextWeight.Bold">
-        @Scheduler?.SelectedDate.ToShortDateString()
+        @Scheduler?.SelectedDate.ToLongDateString()
     </Span>
 
     <Buttons>
-        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnDayViewClick">
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Active="@DayViewSelected" Clicked="@OnDayViewClick">
             Day
         </Button>
-        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnWeekViewClick">
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Active="@WeekViewSelected" Clicked="@OnWeekViewClick">
             Week
         </Button>
     </Buttons>

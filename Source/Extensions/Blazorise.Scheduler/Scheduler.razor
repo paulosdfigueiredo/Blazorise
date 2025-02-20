@@ -7,9 +7,9 @@
         }
 
         <_SchedulerViews>
-            @if ( schedulerView is not null )
+            @if ( ShowDayView )
             {
-                <_SchedulerDayView StartTime="@schedulerView.StartTime" EndTime="@schedulerView.EndTime" SelectedDate="@SelectedDate" />
+                <_SchedulerDayView StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@SelectedDate" />
             }
         </_SchedulerViews>
     </CascadingValue>

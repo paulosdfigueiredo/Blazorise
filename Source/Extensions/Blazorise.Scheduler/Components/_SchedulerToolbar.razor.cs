@@ -40,19 +40,25 @@ public partial class _SchedulerToolbar : BaseComponent
             await Scheduler.NavigateToday();
     }
 
-    protected Task OnDayViewClick()
+    protected async Task OnDayViewClick()
     {
-        return Task.CompletedTask;
+        if ( Scheduler is not null )
+            await Scheduler.NavigateDayView();
     }
 
-    protected Task OnWeekViewClick()
+    protected async Task OnWeekViewClick()
     {
-        return Task.CompletedTask;
+        if ( Scheduler is not null )
+            await Scheduler.NavigateWeekView();
     }
 
     #endregion
 
     #region Properties
+
+    protected bool DayViewSelected => Scheduler?.SelectedView == SchedulerView.Day;
+
+    protected bool WeekViewSelected => Scheduler?.SelectedView == SchedulerView.Week;
 
     /// <summary>
     /// Gets or sets the scheduler component that the toolbar belongs to.

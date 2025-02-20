@@ -14,7 +14,7 @@ public partial class Scheduler : BaseComponent
 
     private SchedulerToolbar schedulerToolbar;
 
-    private SchedulerView schedulerView;
+    private SchedulerDayView schedulerDayView;
 
     #endregion
 
@@ -32,9 +32,9 @@ public partial class Scheduler : BaseComponent
         this.schedulerToolbar = schedulerToolbar;
     }
 
-    internal void NotifySchedulerView( SchedulerView schedulerView )
+    internal void NotifySchedulerView( SchedulerDayView schedulerDayView )
     {
-        this.schedulerView = schedulerView;
+        this.schedulerDayView = schedulerDayView;
     }
 
     public async Task NavigatePrevious()
@@ -58,9 +58,25 @@ public partial class Scheduler : BaseComponent
         await InvokeAsync( StateHasChanged );
     }
 
+    public async Task NavigateDayView()
+    {
+        SelectedView = SchedulerView.Day;
+        await SelectedViewChanged.InvokeAsync( SelectedView );
+        await InvokeAsync( StateHasChanged );
+    }
+
+    public async Task NavigateWeekView()
+    {
+        SelectedView = SchedulerView.Week;
+        await SelectedViewChanged.InvokeAsync( SelectedView );
+        await InvokeAsync( StateHasChanged );
+    }
+
     #endregion
 
     #region Properties
+
+    protected bool ShowDayView => schedulerDayView is not null && SelectedView == SchedulerView.Day;
 
     /// <summary>
     /// Gets or sets the collection of appointments to be displayed in the scheduler.
@@ -68,7 +84,7 @@ public partial class Scheduler : BaseComponent
     [Parameter] public IEnumerable<SchedulerAppointment> Appointments { get; set; }
 
     /// <summary>
-    /// Gets or sets the selected date.
+    /// The currently selected date. Determines the date that is displayed in the scheduler.
     /// </summary>
     [Parameter] public DateTime SelectedDate { get; set; } = DateTime.Today;
 
@@ -76,6 +92,16 @@ public partial class Scheduler : BaseComponent
     /// Occurs when the selected date changes.
     /// </summary>
     [Parameter] public EventCallback<DateTime> SelectedDateChanged { get; set; }
+
+    /// <summary>
+    /// The currently selected view. Determines the view that is displayed in the scheduler.
+    /// </summary>
+    [Parameter] public SchedulerView SelectedView { get; set; }
+
+    /// <summary>
+    /// Occurs when the selected view changes.
+    /// </summary>
+    [Parameter] public EventCallback<SchedulerView> SelectedViewChanged { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.
