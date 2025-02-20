@@ -1,4 +1,21 @@
 ﻿@inherits BaseComponent
 <Div Class="@ClassNames" Style="@StyleNames" Flex="Blazorise.Flex.Column.Wrap" Border="Blazorise.Border.Is1">
-    @ChildContent
+    <CascadingValue Value="@this" IsFixed>
+        @if ( schedulerToolbar is not null )
+        {
+            <_SchedulerToolbar />
+        }
+
+        <_SchedulerViews>
+            @if ( schedulerView is not null )
+            {
+                <_SchedulerDayView StartTime="@schedulerView.StartTime" EndTime="@schedulerView.EndTime" SelectedDate="@SelectedDate" />
+            }
+        </_SchedulerViews>
+    </CascadingValue>
 </Div>
+
+@* This one is to hold information about the scheduler *@
+<CascadingValue Value="@this" IsFixed>
+    @ChildContent
+</CascadingValue>

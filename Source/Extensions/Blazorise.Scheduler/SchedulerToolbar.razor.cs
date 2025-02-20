@@ -1,28 +1,27 @@
 ﻿#region Using directives
-using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 #endregion
 
 namespace Blazorise.Scheduler;
 
-public partial class SchedulerToolbar : BaseComponent
+public partial class SchedulerToolbar
 {
-    #region Members
-
-    #endregion
-
     #region Methods
 
-    override protected void BuildClasses( ClassBuilder builder )
+    protected override void OnInitialized()
     {
-        builder.Append( "b-scheduler-toolbar" );
+        Scheduler?.NotifySchedulerToolbar( this );
 
-        base.BuildClasses( builder );
+        base.OnInitialized();
     }
-
     #endregion
 
     #region Properties
+
+    /// <summary>
+    /// Gets or sets the scheduler component that the toolbar belongs to.
+    /// </summary>
+    [CascadingParameter] public Scheduler Scheduler { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.

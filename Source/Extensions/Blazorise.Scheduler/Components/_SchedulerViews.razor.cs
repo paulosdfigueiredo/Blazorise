@@ -1,16 +1,29 @@
 ﻿#region Using directives
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 #endregion
 
-namespace Blazorise.Scheduler;
+namespace Blazorise.Scheduler.Components;
 
-public partial class SchedulerViews
+public partial class _SchedulerViews : BaseComponent
 {
     #region Members
 
     #endregion
 
     #region Methods
+
+    override protected void BuildClasses( ClassBuilder builder )
+    {
+        builder.Append( "b-scheduler-views" );
+
+        base.BuildClasses( builder );
+    }
 
     #endregion
 

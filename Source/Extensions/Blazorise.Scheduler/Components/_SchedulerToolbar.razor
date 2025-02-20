@@ -1,0 +1,29 @@
+﻿@inherits BaseComponent
+<Div Class="@ClassNames" Style="@StyleNames" Background="Blazorise.Background.Light" Padding="Blazorise.Padding.Is3" Flex="Blazorise.Flex.JustifyContent.Between">
+    <Buttons>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnTodayClick">
+            Today
+        </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnPreviousClick">
+            <Icon Name="IconName.ChevronLeft" />
+        </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnNextClick">
+            <Icon Name="IconName.ChevronRight" />
+        </Button>
+    </Buttons>
+
+    <Span TextWeight="TextWeight.Bold">
+        @Scheduler?.SelectedDate.ToShortDateString()
+    </Span>
+
+    <Buttons>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnDayViewClick">
+            Day
+        </Button>
+        <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnWeekViewClick">
+            Week
+        </Button>
+    </Buttons>
+
+    @ChildContent
+</Div>

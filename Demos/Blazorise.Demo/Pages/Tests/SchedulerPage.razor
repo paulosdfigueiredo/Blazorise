@@ -6,10 +6,10 @@
                 <CardTitle>Scheduler</CardTitle>
             </CardHeader>
             <CardBody>
-                <Scheduler>
+                <Scheduler Appointments="@Appointments">
                     <SchedulerToolbar />
                     <SchedulerViews>
-                        <SchedulerView />
+                        <SchedulerView StartTime="@(new TimeOnly( 8, 0 ))" EndTime="@(new TimeOnly( 17, 0 ))" />
                     </SchedulerViews>
                 </Scheduler>
             </CardBody>
@@ -17,7 +17,10 @@
     </Column>
 </Row>
 @code {
-    SplitterDirection direction = SplitterDirection.Horizontal;
-    double minSize = 10;
-    double gutterSize = 10;
+    List<SchedulerAppointment> Appointments = new List<SchedulerAppointment>
+    {
+        new SchedulerAppointment( "Meeting with the CEO", "Regarding the new margeting strategy", DateTime.Now, DateTime.Now.AddHours(1) ),
+        new SchedulerAppointment( "Lunch with the team", "Discussing the new project", DateTime.Now.AddHours(2), DateTime.Now.AddHours(3) ),
+        new SchedulerAppointment( "Meeting with the client", "Discussing the new project", DateTime.Now.AddHours(4), DateTime.Now.AddHours(5) ),
+    };
 }
