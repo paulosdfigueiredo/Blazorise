@@ -46,14 +46,14 @@ public partial class Scheduler : BaseComponent
 
     public async Task NavigatePrevious()
     {
-        SelectedDate = SelectedDate.AddDays( -1 );
+        SelectedDate = SelectedDate.AddDays( SelectedView == SchedulerView.Week ? -7 : -1 );
         await SelectedDateChanged.InvokeAsync( SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
 
     public async Task NavigateNext()
     {
-        SelectedDate = SelectedDate.AddDays( 1 );
+        SelectedDate = SelectedDate.AddDays( SelectedView == SchedulerView.Week ? 7 : 1 );
         await SelectedDateChanged.InvokeAsync( SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
@@ -107,6 +107,11 @@ public partial class Scheduler : BaseComponent
     /// Occurs when the selected date changes.
     /// </summary>
     [Parameter] public EventCallback<DateTime> SelectedDateChanged { get; set; }
+
+    /// <summary>
+    /// The first day of the week. Determines the first day of the week that is displayed in the scheduler.
+    /// </summary>
+    [Parameter] public DayOfWeek FirstDayOfWeek { get; set; } = DayOfWeek.Sunday;
 
     /// <summary>
     /// The currently selected view. Determines the view that is displayed in the scheduler.

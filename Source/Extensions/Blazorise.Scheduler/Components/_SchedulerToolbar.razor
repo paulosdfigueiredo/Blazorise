@@ -1,4 +1,5 @@
 ﻿@inherits BaseComponent
+@using Blazorise.Scheduler.Extensions
 <Div Class="@ClassNames" Style="@StyleNames" Background="Blazorise.Background.Light" Padding="Blazorise.Padding.Is3" Flex="Blazorise.Flex.JustifyContent.Between">
     <Buttons>
         <Button Color="Color.Secondary" Size="Size.Small" Outline Clicked="@OnTodayClick">
@@ -13,7 +14,18 @@
     </Buttons>
 
     <Span TextWeight="TextWeight.Bold">
-        @Scheduler?.SelectedDate.ToLongDateString()
+        @if ( WeekViewSelected && Scheduler?.SelectedDate is not null )
+        {
+            var startOfWeek = Scheduler.SelectedDate.StartOfWeek( Scheduler.FirstDayOfWeek );
+
+            <Span>@startOfWeek.ToLongDateString()</Span>
+            <Span>-</Span>
+            <Span>@startOfWeek.AddDays( 6 ).ToLongDateString()</Span>
+        }
+        else
+        {
+            @Scheduler?.SelectedDate.ToLongDateString()
+        }
     </Span>
 
     <Buttons>

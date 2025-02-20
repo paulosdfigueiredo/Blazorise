@@ -1,4 +1,4 @@
-﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
+﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1" Background="@BackgroundColor">
     @if ( ShowDayHeader )
     {
         <Div Flex="Blazorise.Flex.Column" Padding="Blazorise.Padding.Is1" TextAlignment="TextAlignment.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
@@ -16,7 +16,13 @@
     }
 </Div>
 @code {
+    private Blazorise.Background BackgroundColor => Date?.Date.Year == SelectedDate?.Date.Year && Date?.Date.Month == SelectedDate?.Date.Month && Date?.Date.Day == SelectedDate?.Date.Day
+        ? Blazorise.Background.Light
+        : Blazorise.Background.Default;
+
     [Parameter] public DateTime? Date { get; set; }
+
+    [Parameter] public DateTime? SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 
