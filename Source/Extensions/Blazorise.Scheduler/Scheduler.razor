@@ -11,6 +11,10 @@
             {
                 <_SchedulerDayView StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@SelectedDate" />
             }
+            @if ( ShowWeekView )
+            {
+                <_SchedulerWeekView StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@SelectedDate" />
+            }
         </_SchedulerViews>
     </CascadingValue>
 </Div>

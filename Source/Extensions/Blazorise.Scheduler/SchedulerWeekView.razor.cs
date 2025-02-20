@@ -5,17 +5,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise.Scheduler;
 
-public partial class SchedulerDayView
+public partial class SchedulerWeekView
 {
-    #region Members
-
-    #endregion
-
     #region Methods
 
     protected override void OnInitialized()
     {
-        Scheduler?.NotifySchedulerDayView( this );
+        Scheduler?.NotifySchedulerWeekView( this );
 
         base.OnInitialized();
     }

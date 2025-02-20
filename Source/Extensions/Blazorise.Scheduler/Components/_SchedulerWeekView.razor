@@ -1,0 +1,6 @@
+﻿<Div Flex="Blazorise.Flex.Default.Wrap">
+    @for ( int hour = ( StartTime?.Hour ?? 0 ); hour <= ( EndTime?.Hour ?? 24 ); ++hour )
+    {
+        <_SchedulerRow @key="@hour" SelectedDate="@SelectedDate" Hour="@hour" />
+    }
+</Div>

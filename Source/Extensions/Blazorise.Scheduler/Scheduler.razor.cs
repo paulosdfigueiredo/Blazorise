@@ -16,6 +16,8 @@ public partial class Scheduler : BaseComponent
 
     private SchedulerDayView schedulerDayView;
 
+    private SchedulerWeekView schedulerWeekView;
+
     #endregion
 
     #region Methods
@@ -32,9 +34,14 @@ public partial class Scheduler : BaseComponent
         this.schedulerToolbar = schedulerToolbar;
     }
 
-    internal void NotifySchedulerView( SchedulerDayView schedulerDayView )
+    internal void NotifySchedulerDayView( SchedulerDayView schedulerDayView )
     {
         this.schedulerDayView = schedulerDayView;
+    }
+
+    internal void NotifySchedulerWeekView( SchedulerWeekView schedulerWeekView )
+    {
+        this.schedulerWeekView = schedulerWeekView;
     }
 
     public async Task NavigatePrevious()
@@ -76,7 +83,15 @@ public partial class Scheduler : BaseComponent
 
     #region Properties
 
+    /// <summary>
+    /// Indicates if the day view should be displayed.
+    /// </summary>
     protected bool ShowDayView => schedulerDayView is not null && SelectedView == SchedulerView.Day;
+
+    /// <summary>
+    /// Indicates if the week view should be displayed.
+    /// </summary>
+    protected bool ShowWeekView => schedulerDayView is not null && SelectedView == SchedulerView.Week;
 
     /// <summary>
     /// Gets or sets the collection of appointments to be displayed in the scheduler.
