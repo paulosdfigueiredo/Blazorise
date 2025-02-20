@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise.Scheduler.Components;
 
-public partial class _SchedulerCell
+public partial class _SchedulerDay
 {
     #region Members
 
@@ -20,14 +20,14 @@ public partial class _SchedulerCell
     #region Properties
 
     IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments
-        ?.Where( x => x.Start.Year == SelectedDate?.Year && x.Start.Month == SelectedDate?.Month && x.Start.Day == SelectedDate?.Day && x.Start.Hour == Hour );
+        ?.Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day && x.Start.Hour == Hour );
 
     /// <summary>
     /// Gets or sets the scheduler component that the views belong to.
     /// </summary>
     [CascadingParameter] public Scheduler Scheduler { get; set; }
 
-    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public DateTime? Date { get; set; }
 
     [Parameter] public int Hour { get; set; }
 

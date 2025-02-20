@@ -1,11 +1,11 @@
 ﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
     @for ( int hour = ( StartTime?.Hour ?? 0 ); hour <= ( EndTime?.Hour ?? 24 ); ++hour )
     {
-        <_SchedulerCell @key="@hour" SelectedDate="@SelectedDate" Hour="@hour" />
+        <_SchedulerDay @key="@hour" Date="@Date" Hour="@hour" />
     }
 </Div>
 @code {
-    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public DateTime? Date { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 
