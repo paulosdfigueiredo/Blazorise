@@ -31,6 +31,16 @@ public partial class _SchedulerDay
         return Task.CompletedTask;
     }
 
+    protected Task OnSlotClick( int slotIndex )
+    {
+        var percentage = slotIndex / (double)Slots;
+        var time = TimeSpan.FromHours( 1 * percentage );
+
+        Console.WriteLine( $"slot clicked: {time}" );
+
+        return Task.CompletedTask;
+    }
+
     #endregion
 
     #region Properties
@@ -52,6 +62,8 @@ public partial class _SchedulerDay
     [Parameter] public DateTime? Date { get; set; }
 
     [Parameter] public int Hour { get; set; }
+
+    [Parameter] public int Slots { get; set; } = 2;
 
     #endregion
 }

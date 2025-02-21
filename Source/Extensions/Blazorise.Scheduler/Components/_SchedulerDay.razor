@@ -1,10 +1,14 @@
 ﻿<Div Class="b-scheduler-row" Flex="Blazorise.Flex.Default.Grow.Is1.Shrink.Is1" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" Background="@DayBackgroundColor" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
-    <Div Class="b-scheduler-row-cell" Padding="Blazorise.Padding.Is3" Width="Blazorise.Width.Is100" @onclick="@(() => Console.WriteLine( $"item click: {Date}:{Hour}" ))">
-        @foreach ( var appointment in Appointments ?? Enumerable.Empty<SchedulerAppointment>() )
+    <Div Class="b-scheduler-row-cell" Width="Blazorise.Width.Is100" Flex="Flex.Column">
+        @for ( int slotIndex = 1; slotIndex <= Slots; ++slotIndex )
+        {
+            <_SchedulerSlot Index="@slotIndex" Clicked="@OnSlotClick" Last="@(slotIndex == Slots)" />
+        }
+        @* @foreach ( var appointment in Appointments ?? Enumerable.Empty<SchedulerAppointment>() )
         {
             <Span Background="Background.Warning" Padding="Blazorise.Padding.Is2">
                 @appointment.Title
             </Span>
-        }
+        } *@
     </Div>
 </Div>

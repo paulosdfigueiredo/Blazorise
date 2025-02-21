@@ -1,0 +1,19 @@
+﻿<Div Class="b-scheduler-slot" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" @onclick="@OnSlotClicked">
+    @ChildContent
+</Div>
+@code {
+    protected Task OnSlotClicked()
+    {
+        return Clicked.InvokeAsync( Index );
+    }
+
+    IFluentBorder BottomBorder => Last ? null : Blazorise.Border.Is1.OnBottom;
+
+    [Parameter] public EventCallback<int> Clicked { get; set; }
+
+    [Parameter] public int Index { get; set; }
+
+    [Parameter] public bool Last { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}
