@@ -1,7 +1,7 @@
-﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1" Background="@BackgroundColor">
+﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
     @if ( ShowDayHeader )
     {
-        <Div Flex="Blazorise.Flex.Column" Padding="Blazorise.Padding.Is1" TextAlignment="TextAlignment.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
+        <Div Flex="Blazorise.Flex.Column" Padding="Blazorise.Padding.Is1" TextAlignment="TextAlignment.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" Background="@BackgroundColor" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
             <Span TextWeight="TextWeight.Bold">
                 @Date?.ToString( "dddd" )
             </Span>
