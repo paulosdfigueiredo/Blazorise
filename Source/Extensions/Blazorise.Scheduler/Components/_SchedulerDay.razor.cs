@@ -33,10 +33,13 @@ public partial class _SchedulerDay
 
     protected Task OnSlotClick( int slotIndex )
     {
-        var percentage = slotIndex / (double)Slots;
-        var time = TimeSpan.FromHours( 1 * percentage );
+        if ( Slots <= 0 )
+            return Task.CompletedTask;
 
-        Console.WriteLine( $"slot clicked: {time}" );
+        var slotDuration = TimeSpan.FromHours( 1.0 / Slots );
+        var time = slotDuration * ( slotIndex - 1 );
+
+        Console.WriteLine( $"Slot {slotIndex} clicked: {time}" );
 
         return Task.CompletedTask;
     }
