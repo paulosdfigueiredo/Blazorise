@@ -17,20 +17,6 @@ public partial class _SchedulerDay
 
     #region Methods
 
-    protected Task OnMouseEnter( MouseEventArgs eventArgs )
-    {
-        MouseHovering = true;
-
-        return Task.CompletedTask;
-    }
-
-    protected Task OnMouseLeave( MouseEventArgs eventArgs )
-    {
-        MouseHovering = false;
-
-        return Task.CompletedTask;
-    }
-
     protected Task OnSlotClick( int slotIndex )
     {
         if ( Slots <= 0 )
@@ -48,14 +34,8 @@ public partial class _SchedulerDay
 
     #region Properties
 
-    private bool MouseHovering { get; set; }
-
-    private Blazorise.Background DayBackgroundColor => MouseHovering
-        ? Blazorise.Background.Light
-        : Blazorise.Background.Default;
-
-    IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments
-        ?.Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day && x.Start.Hour == Hour );
+    IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments?
+        .Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day && x.Start.Hour == Hour );
 
     /// <summary>
     /// Gets or sets the scheduler component that the views belong to.

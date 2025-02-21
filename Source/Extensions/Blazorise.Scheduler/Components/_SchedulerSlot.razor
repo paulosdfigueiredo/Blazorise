@@ -1,13 +1,33 @@
-﻿<Div Class="b-scheduler-slot" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" @onclick="@OnSlotClicked">
+﻿<Div Class="b-scheduler-slot" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" Background="@BackgroundColor" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave" @onclick="@OnSlotClicked">
     @ChildContent
 </Div>
 @code {
+    protected Task OnMouseEnter( MouseEventArgs eventArgs )
+    {
+        MouseHovering = true;
+
+        return Task.CompletedTask;
+    }
+
+    protected Task OnMouseLeave( MouseEventArgs eventArgs )
+    {
+        MouseHovering = false;
+
+        return Task.CompletedTask;
+    }
+
     protected Task OnSlotClicked()
     {
         return Clicked.InvokeAsync( Index );
     }
 
+    private bool MouseHovering { get; set; }
+
     IFluentBorder BottomBorder => Last ? null : Blazorise.Border.Is1.OnBottom;
+
+    private Blazorise.Background BackgroundColor => MouseHovering
+       ? Blazorise.Background.Light
+       : Blazorise.Background.Default;
 
     [Parameter] public EventCallback<int> Clicked { get; set; }
 
