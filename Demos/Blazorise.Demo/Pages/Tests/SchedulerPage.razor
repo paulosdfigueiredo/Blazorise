@@ -18,10 +18,12 @@
     </Column>
 </Row>
 @code {
+    private static DateTime start = DateTime.Today.AddHours( 10 );
+
     List<SchedulerAppointment> Appointments = new List<SchedulerAppointment>
     {
-        new SchedulerAppointment( "Meeting with the CEO", "Regarding the new margeting strategy", DateTime.Now, DateTime.Now.AddHours(1) ),
-        new SchedulerAppointment( "Lunch with the team", "Discussing the new project", DateTime.Now.AddHours(2), DateTime.Now.AddHours(3) ),
-        new SchedulerAppointment( "Meeting with the client", "Discussing the new project", DateTime.Now.AddHours(4), DateTime.Now.AddHours(5) ),
+        new SchedulerAppointment( "Meeting with the CEO", "Regarding the new margeting strategy", start, start.AddHours(1) ),
+        new SchedulerAppointment( "Lunch with the team", "Discussing the new project", start.AddHours(2), start.AddHours(3) ),
+        new SchedulerAppointment( "Meeting with the client", "Discussing the new project", start.AddHours(4), start.AddHours(5) ),
     };
 }

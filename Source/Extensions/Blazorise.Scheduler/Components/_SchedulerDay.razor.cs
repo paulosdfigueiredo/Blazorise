@@ -17,25 +17,27 @@ public partial class _SchedulerDay
 
     #region Methods
 
-    protected Task OnSlotClick( int slotIndex )
+    protected Task OnSlotClick( TimeSpan time )
+    {
+        Console.WriteLine( $"Slot clicked: {time}" );
+
+        return Task.CompletedTask;
+    }
+
+    protected TimeSpan GetTime( int slotIndex )
     {
         if ( Slots <= 0 )
-            return Task.CompletedTask;
+            return TimeSpan.Zero;
 
         var slotDuration = TimeSpan.FromHours( 1.0 / Slots );
         var time = slotDuration * ( slotIndex - 1 );
 
-        Console.WriteLine( $"Slot {slotIndex} clicked: {time}" );
-
-        return Task.CompletedTask;
+        return time;
     }
 
     #endregion
 
     #region Properties
-
-    IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments?
-        .Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day && x.Start.Hour == Hour );
 
     /// <summary>
     /// Gets or sets the scheduler component that the views belong to.
