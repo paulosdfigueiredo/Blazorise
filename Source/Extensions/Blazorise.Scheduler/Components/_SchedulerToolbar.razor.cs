@@ -24,32 +24,32 @@ public partial class _SchedulerToolbar : BaseComponent
 
     protected async Task OnPreviousClick()
     {
-        if ( Scheduler is not null )
-            await Scheduler.NavigatePrevious();
+        if ( SchedulerState?.PrevDayRequested is not null )
+            await SchedulerState.PrevDayRequested.InvokeCallbackAsync();
     }
 
     protected async Task OnNextClick()
     {
-        if ( Scheduler is not null )
-            await Scheduler.NavigateNext();
+        if ( SchedulerState?.NextDayRequested is not null )
+            await SchedulerState.NextDayRequested.InvokeCallbackAsync();
     }
 
     protected async Task OnTodayClick()
     {
-        if ( Scheduler is not null )
-            await Scheduler.NavigateToday();
+        if ( SchedulerState?.TodayRequested is not null )
+            await SchedulerState.TodayRequested.InvokeCallbackAsync();
     }
 
     protected async Task OnDayViewClick()
     {
-        if ( Scheduler is not null )
-            await Scheduler.NavigateDayView();
+        if ( SchedulerState?.DayViewRequested is not null )
+            await SchedulerState.DayViewRequested.InvokeCallbackAsync();
     }
 
     protected async Task OnWeekViewClick()
     {
-        if ( Scheduler is not null )
-            await Scheduler.NavigateWeekView();
+        if ( SchedulerState?.WeekViewRequested is not null )
+            await SchedulerState.WeekViewRequested.InvokeCallbackAsync();
     }
 
     #endregion
@@ -64,6 +64,11 @@ public partial class _SchedulerToolbar : BaseComponent
     /// Gets or sets the scheduler component that the toolbar belongs to.
     /// </summary>
     [CascadingParameter] public Scheduler Scheduler { get; set; }
+
+    /// <summary>
+    /// Gets or sets the scheduler state.
+    /// </summary>
+    [CascadingParameter] public SchedulerState SchedulerState { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.

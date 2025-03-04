@@ -1,32 +1,90 @@
 ﻿#region Using directives
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
+using Blazorise.Infrastructure;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 #endregion
 
 namespace Blazorise.Scheduler;
 
-public partial class Scheduler : BaseComponent
+/// <summary>
+/// A scheduler component that allows users to view and manage appointments.
+/// </summary>
+public partial class Scheduler : BaseComponent, IAsyncDisposable
 {
     #region Members
 
+    /// <summary>
+    /// Provides the state of the <see cref="Scheduler"/> component.
+    /// </summary>
+    private SchedulerState state = new();
+
     private SchedulerToolbar schedulerToolbar;
-
     private SchedulerDayView schedulerDayView;
-
     private SchedulerWeekView schedulerWeekView;
+
+    private readonly EventCallbackSubscriber prevDaySubscriber;
+    private readonly EventCallbackSubscriber nextDaySubscriber;
+    private readonly EventCallbackSubscriber todaySubscriber;
+    private readonly EventCallbackSubscriber dayViewSubscriber;
+    private readonly EventCallbackSubscriber weekViewSubscriber;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Default <see cref="Scheduler"/> constructor.
+    /// </summary>
+    public Scheduler()
+    {
+        prevDaySubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigatePrevious ) );
+        nextDaySubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateNext ) );
+        todaySubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateToday ) );
+        dayViewSubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateDayView ) );
+        weekViewSubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateWeekView ) );
+    }
 
     #endregion
 
     #region Methods
 
+    /// <inheritdoc/>
+    protected override Task OnParametersSetAsync()
+    {
+        prevDaySubscriber.SubscribeOrReplace( State?.PrevDayRequested );
+        nextDaySubscriber.SubscribeOrReplace( State?.NextDayRequested );
+        todaySubscriber.SubscribeOrReplace( State?.TodayRequested );
+        dayViewSubscriber.SubscribeOrReplace( State?.DayViewRequested );
+        weekViewSubscriber.SubscribeOrReplace( State?.WeekViewRequested );
+
+        return base.OnParametersSetAsync();
+    }
+
+    /// <inheritdoc/>
     override protected void BuildClasses( ClassBuilder builder )
     {
         builder.Append( "b-scheduler" );
 
         base.BuildClasses( builder );
+    }
+
+    /// <inheritdoc/>
+    protected override async ValueTask DisposeAsync( bool disposing )
+    {
+        if ( disposing && Rendered )
+        {
+            prevDaySubscriber?.Dispose();
+            nextDaySubscriber?.Dispose();
+            todaySubscriber?.Dispose();
+            dayViewSubscriber?.Dispose();
+            weekViewSubscriber?.Dispose();
+        }
+
+        await base.DisposeAsync( disposing );
     }
 
     internal void NotifySchedulerToolbar( SchedulerToolbar schedulerToolbar )
@@ -92,6 +150,11 @@ public partial class Scheduler : BaseComponent
     /// Indicates if the week view should be displayed.
     /// </summary>
     protected bool ShowWeekView => schedulerDayView is not null && SelectedView == SchedulerView.Week;
+
+    /// <summary>
+    /// Gets the scheduler state.
+    /// </summary>
+    protected SchedulerState State => state;
 
     /// <summary>
     /// Gets or sets the collection of appointments to be displayed in the scheduler.
