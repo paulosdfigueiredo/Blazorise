@@ -117,6 +117,10 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         this.schedulerWeekView = schedulerWeekView;
     }
 
+    /// <summary>
+    /// Navigates to the previous date.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigatePrevious()
     {
         state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? -7 : -1 );
@@ -124,6 +128,10 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    /// <summary>
+    /// Navigates to the next date.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigateNext()
     {
         state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? 7 : 1 );
@@ -131,6 +139,10 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    /// <summary>
+    /// Navigates to the current date.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigateToday()
     {
         state.SelectedDate = DateOnly.FromDateTime( DateTime.Today );
@@ -138,6 +150,10 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    /// <summary>
+    /// Navigates to the day view.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigateDayView()
     {
         SelectedView = SchedulerView.Day;
@@ -145,6 +161,10 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    /// <summary>
+    /// Navigates to the week view.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigateWeekView()
     {
         SelectedView = SchedulerView.Week;
