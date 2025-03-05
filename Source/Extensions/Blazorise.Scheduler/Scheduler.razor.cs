@@ -199,11 +199,23 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    /// <summary>
+    /// Gets the appointments that fall within the specified date, hour, and time range.
+    /// </summary>
+    /// <param name="date">The date to filter appointments.</param>
+    /// <param name="slotHour">The hour to filter appointments.</param>
+    /// <param name="time">The time range to filter appointments.</param>
+    /// <returns>An enumerable collection of appointments that match the specified criteria.</returns>
     internal IEnumerable<TItem> AppointmentsInRange( DateOnly date, int slotHour, TimeSpan time )
     {
         return Appointments?.Where( x => searchPredicate( x, date, slotHour, time ) );
     }
 
+    /// <summary>
+    /// Gets the title of the specified appointment.
+    /// </summary>
+    /// <param name="appointment">The appointment to get the title from.</param>
+    /// <returns>The title of the appointment.</returns>
     internal string GetAppointmentTitle( TItem appointment )
     {
         return getTitleFunc( appointment );
