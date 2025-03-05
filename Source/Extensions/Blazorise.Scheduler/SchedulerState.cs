@@ -10,7 +10,10 @@ namespace Blazorise.Scheduler;
 /// </summary>
 public record SchedulerState
 {
-    public DateOnly SelectedDate { get; init; }
+    /// <summary>
+    /// Gets or sets the date that is currently selected in the scheduler.
+    /// </summary>
+    public DateOnly SelectedDate { get; set; } = DateOnly.FromDateTime( DateTime.Today );
 
     /// <summary>
     /// Gets the event callback that is triggered when a request is made to navigate to the next day.

@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Blazorise.Extensions;
 using Blazorise.Infrastructure;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
+using static System.Formats.Asn1.AsnWriter;
 #endregion
 
 namespace Blazorise.Scheduler;
@@ -65,6 +67,19 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     }
 
     /// <inheritdoc/>
+    public override async Task SetParametersAsync( ParameterView parameters )
+    {
+        var dateChanged = parameters.TryGetValue<DateOnly>( nameof( Date ), out var paramDate ) && !Date.IsEqual( paramDate );
+
+        if ( dateChanged )
+        {
+            Date = paramDate;
+        }
+
+        await base.SetParametersAsync( parameters );
+    }
+
+    /// <inheritdoc/>
     override protected void BuildClasses( ClassBuilder builder )
     {
         builder.Append( "b-scheduler" );
@@ -104,22 +119,22 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
 
     public async Task NavigatePrevious()
     {
-        SelectedDate = SelectedDate.AddDays( SelectedView == SchedulerView.Week ? -7 : -1 );
-        await SelectedDateChanged.InvokeAsync( SelectedDate );
+        state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? -7 : -1 );
+        await DateChanged.InvokeAsync( state.SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
 
     public async Task NavigateNext()
     {
-        SelectedDate = SelectedDate.AddDays( SelectedView == SchedulerView.Week ? 7 : 1 );
-        await SelectedDateChanged.InvokeAsync( SelectedDate );
+        state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? 7 : 1 );
+        await DateChanged.InvokeAsync( state.SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
 
     public async Task NavigateToday()
     {
-        SelectedDate = DateTime.Today;
-        await SelectedDateChanged.InvokeAsync( SelectedDate );
+        state.SelectedDate = DateOnly.FromDateTime( DateTime.Today );
+        await DateChanged.InvokeAsync( state.SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
 
@@ -162,14 +177,14 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     [Parameter] public IEnumerable<SchedulerAppointment> Appointments { get; set; }
 
     /// <summary>
-    /// The currently selected date. Determines the date that is displayed in the scheduler.
+    /// The currently selected date. Determines the date that is displayed in the scheduler. Defaults to the current date.
     /// </summary>
-    [Parameter] public DateTime SelectedDate { get; set; } = DateTime.Today;
+    [Parameter] public DateOnly Date { get; set; }
 
     /// <summary>
     /// Occurs when the selected date changes.
     /// </summary>
-    [Parameter] public EventCallback<DateTime> SelectedDateChanged { get; set; }
+    [Parameter] public EventCallback<DateOnly> DateChanged { get; set; }
 
     /// <summary>
     /// The first day of the week. Determines the first day of the week that is displayed in the scheduler.

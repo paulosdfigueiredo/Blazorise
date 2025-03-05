@@ -10,11 +10,11 @@
             <_SchedulerViews>
                 @if ( ShowDayView )
                 {
-                    <_SchedulerDayView StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@SelectedDate" />
+                    <_SchedulerDayView StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@state.SelectedDate" />
                 }
                 @if ( ShowWeekView )
                 {
-                    <_SchedulerWeekView StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@SelectedDate" />
+                    <_SchedulerWeekView StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" />
                 }
             </_SchedulerViews>
         </CascadingValue>

@@ -14,9 +14,9 @@
     </Buttons>
 
     <Span TextWeight="TextWeight.Bold">
-        @if ( WeekViewSelected && Scheduler?.SelectedDate is not null )
+        @if ( WeekViewSelected && Scheduler?.Date is not null )
         {
-            var startOfWeek = Scheduler.SelectedDate.StartOfWeek( Scheduler.FirstDayOfWeek );
+            var startOfWeek = Scheduler.Date.StartOfWeek( Scheduler.FirstDayOfWeek );
 
             <Span>@startOfWeek.ToLongDateString()</Span>
             <Span>-</Span>
@@ -24,7 +24,7 @@
         }
         else
         {
-            @Scheduler?.SelectedDate.ToLongDateString()
+            @Scheduler?.Date.ToLongDateString()
         }
     </Span>
 

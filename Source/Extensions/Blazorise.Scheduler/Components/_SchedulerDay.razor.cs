@@ -44,7 +44,7 @@ public partial class _SchedulerDay
     /// </summary>
     [CascadingParameter] public Scheduler Scheduler { get; set; }
 
-    [Parameter] public DateTime? Date { get; set; }
+    [Parameter] public DateOnly? Date { get; set; }
 
     [Parameter] public int Hour { get; set; }
 

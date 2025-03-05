@@ -22,7 +22,7 @@ public partial class _SchedulerDayView
     /// </summary>
     [CascadingParameter] public Scheduler Scheduler { get; set; }
 
-    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public DateOnly? SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 

@@ -6,7 +6,7 @@
                 <CardTitle>Scheduler</CardTitle>
             </CardHeader>
             <CardBody>
-                <Scheduler Appointments="@Appointments">
+                <Scheduler @bind-Date="@selectedDate" Appointments="@Appointments">
                     <SchedulerToolbar />
                     <SchedulerViews>
                         <SchedulerDayView StartTime="@(new TimeOnly( 8, 0 ))" EndTime="@(new TimeOnly( 17, 0 ))" />
@@ -17,7 +17,14 @@
         </Card>
     </Column>
 </Row>
+<Row>
+    <Column>
+        Selected date: @selectedDate
+    </Column>
+</Row>
 @code {
+    private DateOnly selectedDate = DateOnly.FromDateTime( DateTime.Today );
+
     private static DateTime start = DateTime.Today.AddHours( 10 );
 
     List<SchedulerAppointment> Appointments = new List<SchedulerAppointment>

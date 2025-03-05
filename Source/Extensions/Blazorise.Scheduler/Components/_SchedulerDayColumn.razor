@@ -16,13 +16,13 @@
     }
 </Div>
 @code {
-    private Blazorise.Background BackgroundColor => Date?.Date.Year == SelectedDate?.Date.Year && Date?.Date.Month == SelectedDate?.Date.Month && Date?.Date.Day == SelectedDate?.Date.Day
+    private Blazorise.Background BackgroundColor => Date?.Year == SelectedDate?.Year && Date?.Month == SelectedDate?.Month && Date?.Day == SelectedDate?.Day
         ? Blazorise.Background.Light
         : Blazorise.Background.Default;
 
-    [Parameter] public DateTime? Date { get; set; }
+    [Parameter] public DateOnly? Date { get; set; }
 
-    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public DateOnly? SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 

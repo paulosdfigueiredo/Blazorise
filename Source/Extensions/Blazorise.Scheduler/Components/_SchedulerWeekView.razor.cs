@@ -1,9 +1,5 @@
 ﻿#region Using directives
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 #endregion
 
@@ -26,7 +22,7 @@ public partial class _SchedulerWeekView
     /// </summary>
     [CascadingParameter] public Scheduler Scheduler { get; set; }
 
-    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public DateOnly? SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 
