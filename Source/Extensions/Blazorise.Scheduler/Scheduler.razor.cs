@@ -1,13 +1,12 @@
 ﻿#region Using directives
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using Blazorise.Extensions;
 using Blazorise.Infrastructure;
+using Blazorise.Scheduler.Extensions;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
-using static System.Formats.Asn1.AsnWriter;
 #endregion
 
 namespace Blazorise.Scheduler;
@@ -123,10 +122,19 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigatePrevious()
     {
-        state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? -7 : -1 );
+        if ( SelectedView == SchedulerView.Week )
+        {
+            state.SelectedDate = state.SelectedDate.StartOfPreviousWeek( FirstDayOfWeek );
+        }
+        else
+        {
+            state.SelectedDate = state.SelectedDate.AddDays( -1 );
+        }
+
         await DateChanged.InvokeAsync( state.SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
+
 
     /// <summary>
     /// Navigates to the next date.
@@ -134,7 +142,15 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task NavigateNext()
     {
-        state.SelectedDate = state.SelectedDate.AddDays( SelectedView == SchedulerView.Week ? 7 : 1 );
+        if ( SelectedView == SchedulerView.Week )
+        {
+            state.SelectedDate = state.SelectedDate.StartOfNextWeek( FirstDayOfWeek );
+        }
+        else
+        {
+            state.SelectedDate = state.SelectedDate.AddDays( 1 );
+        }
+
         await DateChanged.InvokeAsync( state.SelectedDate );
         await InvokeAsync( StateHasChanged );
     }
