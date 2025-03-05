@@ -6,7 +6,7 @@
                 <CardTitle>Scheduler</CardTitle>
             </CardHeader>
             <CardBody>
-                <Scheduler TItem="SchedulerAppointment" @bind-Date="@selectedDate" Appointments="@Appointments" FirstDayOfWeek="DayOfWeek.Monday">
+                <Scheduler TItem="SchedulerAppointment" @bind-Date="@selectedDate" Appointments="@Appointments" FirstDayOfWeek="DayOfWeek.Monday" SlotClicked="@OnSlotClicked">
                     <SchedulerToolbar />
                     <SchedulerViews>
                         <SchedulerDayView StartTime="@(new TimeOnly( 8, 0 ))" EndTime="@(new TimeOnly( 17, 0 ))" />
@@ -26,6 +26,15 @@
     private DateOnly selectedDate = DateOnly.FromDateTime( DateTime.Today );
 
     private static DateTime start = DateTime.Today.AddHours( 10 );
+
+    private Task OnSlotClicked( SchedulerSlotClickedEventArgs eventArgs )
+    {
+        Appointments.Add( new SchedulerAppointment( "test", "some desc",
+            new DateTime( eventArgs.Date, eventArgs.Time ),
+            new DateTime( eventArgs.Date, eventArgs.Time ).AddHours( 1 )
+        ) );
+        return Task.CompletedTask;
+    }
 
     public class SchedulerAppointment
     {

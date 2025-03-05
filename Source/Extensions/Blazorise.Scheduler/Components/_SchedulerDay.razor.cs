@@ -17,11 +17,11 @@ public partial class _SchedulerDay<TItem>
 
     #region Methods
 
-    protected Task OnSlotClick( TimeSpan time )
+    protected async Task OnSlotClick( TimeSpan time )
     {
         Console.WriteLine( $"Slot clicked: {time}" );
 
-        return Task.CompletedTask;
+        await Scheduler.NotifySlotClicked( Date, new TimeOnly( Hour, time.Minutes ) );
     }
 
     protected TimeSpan GetTime( int slotIndex )
@@ -38,6 +38,8 @@ public partial class _SchedulerDay<TItem>
     #endregion
 
     #region Properties
+
+    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     [Parameter] public DateOnly Date { get; set; }
 

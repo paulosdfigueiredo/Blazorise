@@ -231,6 +231,11 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         return getDescriptionFunc( appointment );
     }
 
+    internal Task NotifySlotClicked( DateOnly date, TimeOnly time )
+    {
+        return SlotClicked.InvokeAsync( new SchedulerSlotClickedEventArgs( date, time ) );
+    }
+
     #endregion
 
     #region Properties
@@ -304,6 +309,11 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the description of the appointment. Defaults to "Description".
     /// </summary>
     [Parameter] public string DescriptionField { get; set; } = "Description";
+
+    /// <summary>
+    /// Occurs when an appointment is clicked.
+    /// </summary>
+    [Parameter] public EventCallback<SchedulerSlotClickedEventArgs> SlotClicked { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.
