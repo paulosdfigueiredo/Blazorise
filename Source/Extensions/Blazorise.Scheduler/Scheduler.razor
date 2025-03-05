@@ -2,7 +2,7 @@
 <Div Class="@ClassNames" Style="@StyleNames" Flex="Blazorise.Flex.Column.Wrap" Border="Blazorise.Border.Is1">
     <CascadingValue Value="@this" IsFixed>
         <CascadingValue Value="@State">
-            @if ( schedulerToolbar is not null )
+            @if ( schedulerToolbar is not null && ShowToolbar )
             {
                 <_SchedulerToolbar />
             }

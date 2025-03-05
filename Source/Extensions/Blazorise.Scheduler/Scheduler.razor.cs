@@ -238,6 +238,11 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     [Parameter] public EventCallback<SchedulerView> SelectedViewChanged { get; set; }
 
     /// <summary>
+    /// Indicates if the toolbar should be displayed.
+    /// </summary>
+    [Parameter] public bool ShowToolbar { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the content to be rendered inside the component.
     /// </summary>
     /// <remarks>
