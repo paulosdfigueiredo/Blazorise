@@ -221,6 +221,16 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         return getTitleFunc( appointment );
     }
 
+    /// <summary>
+    /// Gets the description of the specified appointment.
+    /// </summary>
+    /// <param name="appointment">The appointment to get the description from.</param>
+    /// <returns>The description of the appointment.</returns>
+    internal string GetAppointmentDescription( TItem appointment )
+    {
+        return getDescriptionFunc( appointment );
+    }
+
     #endregion
 
     #region Properties
