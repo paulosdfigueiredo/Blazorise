@@ -39,11 +39,6 @@ public partial class _SchedulerDay<TItem>
 
     #region Properties
 
-    /// <summary>
-    /// Gets or sets the scheduler component that the views belong to.
-    /// </summary>
-    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
-
     [Parameter] public DateOnly? Date { get; set; }
 
     [Parameter] public int Hour { get; set; }

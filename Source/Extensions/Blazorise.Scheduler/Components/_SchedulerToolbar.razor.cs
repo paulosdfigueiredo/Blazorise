@@ -1,4 +1,5 @@
 ﻿#region Using directives
+using System;
 using System.Threading.Tasks;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
@@ -56,19 +57,29 @@ public partial class _SchedulerToolbar<TItem> : BaseComponent
 
     #region Properties
 
-    protected bool DayViewSelected => Scheduler?.SelectedView == SchedulerView.Day;
+    protected bool DayViewSelected => SelectedView == SchedulerView.Day;
 
-    protected bool WeekViewSelected => Scheduler?.SelectedView == SchedulerView.Week;
-
-    /// <summary>
-    /// Gets or sets the scheduler component that the toolbar belongs to.
-    /// </summary>
-    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
+    protected bool WeekViewSelected => SelectedView == SchedulerView.Week;
 
     /// <summary>
     /// Gets or sets the scheduler state.
     /// </summary>
     [CascadingParameter] public SchedulerState SchedulerState { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date that is currently selected in the scheduler.
+    /// </summary>
+    [Parameter] public DateOnly SelectedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the view that is currently selected in the scheduler.
+    /// </summary>
+    [Parameter] public SchedulerView SelectedView { get; set; }
+
+    /// <summary>
+    /// Gets or sets the first day of the week.
+    /// </summary>
+    [Parameter] public DayOfWeek FirstDayOfWeek { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.

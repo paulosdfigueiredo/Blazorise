@@ -25,11 +25,6 @@ public partial class _SchedulerViews<TItem> : BaseComponent
     #region Properties
 
     /// <summary>
-    /// Gets or sets the scheduler component that the views belong to.
-    /// </summary>
-    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
-
-    /// <summary>
     /// Gets or sets the content to be rendered inside the component.
     /// </summary>
     /// <remarks>

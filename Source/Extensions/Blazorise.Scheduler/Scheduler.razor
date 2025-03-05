@@ -5,7 +5,7 @@
         <CascadingValue Value="@State">
             @if ( schedulerToolbar is not null && ShowToolbar )
             {
-                <_SchedulerToolbar TItem="TItem" />
+                <_SchedulerToolbar TItem="TItem" SelectedDate="@state.SelectedDate" SelectedView="@SelectedView" FirstDayOfWeek="@FirstDayOfWeek" />
             }
 
             <_SchedulerViews TItem="TItem">
@@ -15,7 +15,7 @@
                 }
                 @if ( ShowWeekView )
                 {
-                    <_SchedulerWeekView TItem="TItem" StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" />
+                    <_SchedulerWeekView TItem="TItem" StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" FirstDayOfWeek="@FirstDayOfWeek" />
                 }
             </_SchedulerViews>
         </CascadingValue>

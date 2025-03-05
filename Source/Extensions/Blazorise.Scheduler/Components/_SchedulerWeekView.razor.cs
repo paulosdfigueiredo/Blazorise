@@ -18,11 +18,14 @@ public partial class _SchedulerWeekView<TItem>
     #region Properties
 
     /// <summary>
-    /// Gets or sets the scheduler component that the view belongs to.
+    /// Gets or sets the date that is currently selected in the scheduler.
     /// </summary>
-    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
+    [Parameter] public DateOnly SelectedDate { get; set; }
 
-    [Parameter] public DateOnly? SelectedDate { get; set; }
+    /// <summary>
+    /// Gets or sets the first day of the week.
+    /// </summary>
+    [Parameter] public DayOfWeek FirstDayOfWeek { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 
