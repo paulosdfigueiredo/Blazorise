@@ -1,9 +1,9 @@
 ﻿@typeparam TItem
 <Div Class="b-scheduler-slot" Position="Position.Relative" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" Background="@BackgroundColor" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave" @onclick="@OnSlotClicked">
-    @foreach ( var appointment in Appointments ?? Enumerable.Empty<SchedulerAppointment>() )
+    @foreach ( var appointment in Appointments ?? Enumerable.Empty<TItem>() )
     {
-        <Span Background="Background.Warning" Flex="Flex.JustifyContent.Start.AlignItems.Center">
-            @appointment.Title
+        <Span Background="Background.Warning" Flex="Flex.JustifyContent.Start.AlignItems.Center" TextOverflow="TextOverflow.Truncate">
+            @Scheduler?.GetAppointmentTitle( appointment )
         </Span>
     }
 </Div>
@@ -35,15 +35,13 @@
        ? Blazorise.Background.Light
        : Blazorise.Background.Default;
 
-    IEnumerable<SchedulerAppointment> Appointments => Scheduler?.Appointments?
-        .Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day
-            && x.Start.Hour == Hour && x.Start.Minute >= Time.Minutes && x.Start.Minute <= Time.Minutes );
+    IEnumerable<TItem> Appointments => Scheduler?.AppointmentsInRange( Date, Hour, Time );
     
     [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     [Parameter] public EventCallback<TimeSpan> Clicked { get; set; }
 
-    [Parameter] public DateOnly? Date { get; set; }
+    [Parameter] public DateOnly Date { get; set; }
 
     [Parameter] public int Hour { get; set; }
 

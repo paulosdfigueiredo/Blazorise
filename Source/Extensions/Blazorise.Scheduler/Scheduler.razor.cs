@@ -1,10 +1,12 @@
 ﻿#region Using directives
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Blazorise.Extensions;
 using Blazorise.Infrastructure;
 using Blazorise.Scheduler.Extensions;
+using Blazorise.Scheduler.Utilities;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 #endregion
@@ -34,6 +36,10 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     private readonly EventCallbackSubscriber dayViewSubscriber;
     private readonly EventCallbackSubscriber weekViewSubscriber;
 
+    private Func<TItem, DateOnly, int, TimeSpan, bool> searchPredicate;
+    private Func<TItem, string> getTitleFunc;
+    private Func<TItem, string> getDescriptionFunc;
+
     #endregion
 
     #region Constructors
@@ -48,6 +54,10 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         todaySubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateToday ) );
         dayViewSubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateDayView ) );
         weekViewSubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateWeekView ) );
+
+        searchPredicate = SchedulerExpressionCompiler.BuildSearchPredicate<TItem>( StartField, EndField );
+        getTitleFunc = SchedulerExpressionCompiler.BuildGetStringFunc<TItem>( TitleField );
+        getDescriptionFunc = SchedulerExpressionCompiler.BuildGetStringFunc<TItem>( DescriptionField );
     }
 
     #endregion
@@ -189,6 +199,16 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         await InvokeAsync( StateHasChanged );
     }
 
+    internal IEnumerable<TItem> AppointmentsInRange( DateOnly date, int slotHour, TimeSpan time )
+    {
+        return Appointments?.Where( x => searchPredicate( x, date, slotHour, time ) );
+    }
+
+    internal string GetAppointmentTitle( TItem appointment )
+    {
+        return getTitleFunc( appointment );
+    }
+
     #endregion
 
     #region Properties
@@ -211,7 +231,7 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     /// <summary>
     /// Gets or sets the collection of appointments to be displayed in the scheduler.
     /// </summary>
-    [Parameter] public IEnumerable<SchedulerAppointment> Appointments { get; set; }
+    [Parameter] public IEnumerable<TItem> Appointments { get; set; }
 
     /// <summary>
     /// The currently selected date. Determines the date that is displayed in the scheduler. Defaults to the current date.
@@ -242,6 +262,26 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     /// Indicates if the toolbar should be displayed.
     /// </summary>
     [Parameter] public bool ShowToolbar { get; set; } = true;
+
+    /// <summary>
+    /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the start date of the appointment. Defaults to "Start".
+    /// </summary>
+    [Parameter] public string StartField { get; set; } = "Start";
+
+    /// <summary>
+    /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the end date of the appointment. Defaults to "End".
+    /// </summary>
+    [Parameter] public string EndField { get; set; } = "End";
+
+    /// <summary>
+    /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the title of the appointment. Defaults to "Title".
+    /// </summary>
+    [Parameter] public string TitleField { get; set; } = "Title";
+
+    /// <summary>
+    /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the description of the appointment. Defaults to "Description".
+    /// </summary>
+    [Parameter] public string DescriptionField { get; set; } = "Description";
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.

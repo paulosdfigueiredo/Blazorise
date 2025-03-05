@@ -4,10 +4,10 @@
     {
         <Div Flex="Blazorise.Flex.Column.JustifyContent.Center.AlignItems.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" Background="@BackgroundColor" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
             <Span TextWeight="TextWeight.Bold">
-                @Date?.ToString( "dddd" )
+                @Date.ToString( "dddd" )
             </Span>
             <Span TextColor="TextColor.Muted">
-                @Date?.ToString( "MMM dd" )
+                @Date.ToString( "MMM dd" )
             </Span>
         </Div>
     }
@@ -17,13 +17,13 @@
     }
 </Div>
 @code {
-    private Blazorise.Background BackgroundColor => Date?.Year == SelectedDate?.Year && Date?.Month == SelectedDate?.Month && Date?.Day == SelectedDate?.Day
+    private Blazorise.Background BackgroundColor => Date.Year == SelectedDate.Year && Date.Month == SelectedDate.Month && Date.Day == SelectedDate.Day
         ? Blazorise.Background.Light
         : Blazorise.Background.Default;
 
-    [Parameter] public DateOnly? Date { get; set; }
+    [Parameter] public DateOnly Date { get; set; }
 
-    [Parameter] public DateOnly? SelectedDate { get; set; }
+    [Parameter] public DateOnly SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 

@@ -17,7 +17,7 @@ public partial class _SchedulerDayView<TItem>
 
     #region Properties
 
-    [Parameter] public DateOnly? SelectedDate { get; set; }
+    [Parameter] public DateOnly SelectedDate { get; set; }
 
     [Parameter] public TimeOnly? StartTime { get; set; }
 
