@@ -1,4 +1,5 @@
-﻿<Div Class="b-scheduler-slot" Position="Position.Relative" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" Background="@BackgroundColor" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave" @onclick="@OnSlotClicked">
+﻿@typeparam TItem
+<Div Class="b-scheduler-slot" Position="Position.Relative" Margin="Margin.IsAuto" Width="Blazorise.Width.Is100" Height="Height.Is100" Border="@BottomBorder" Background="@BackgroundColor" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave" @onclick="@OnSlotClicked">
     @foreach ( var appointment in Appointments ?? Enumerable.Empty<SchedulerAppointment>() )
     {
         <Span Background="Background.Warning" Flex="Flex.JustifyContent.Start.AlignItems.Center">
@@ -38,7 +39,7 @@
         .Where( x => x.Start.Year == Date?.Year && x.Start.Month == Date?.Month && x.Start.Day == Date?.Day
             && x.Start.Hour == Hour && x.Start.Minute >= Time.Minutes && x.Start.Minute <= Time.Minutes );
     
-    [CascadingParameter] public Scheduler Scheduler { get; set; }
+    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     [Parameter] public EventCallback<TimeSpan> Clicked { get; set; }
 

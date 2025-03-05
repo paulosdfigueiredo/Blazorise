@@ -1,16 +1,11 @@
 ﻿#region Using directives
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 #endregion
 
 namespace Blazorise.Scheduler.Components;
 
-public partial class _SchedulerViews : BaseComponent
+public partial class _SchedulerViews<TItem> : BaseComponent
 {
     #region Members
 
@@ -32,13 +27,13 @@ public partial class _SchedulerViews : BaseComponent
     /// <summary>
     /// Gets or sets the scheduler component that the views belong to.
     /// </summary>
-    [CascadingParameter] public Scheduler Scheduler { get; set; }
+    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered inside the component.
     /// </summary>
     /// <remarks>
-    /// This property allows developers to define custom content within the <see cref="SchedulerViews"/> component.
+    /// This property allows developers to define custom content within the <see cref="SchedulerViews{TItem}"/> component.
     /// </remarks>
     [Parameter] public RenderFragment ChildContent { get; set; }
 

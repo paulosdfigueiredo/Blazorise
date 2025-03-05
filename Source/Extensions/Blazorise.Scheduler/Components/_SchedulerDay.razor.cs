@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Blazorise.Scheduler.Components;
 
-public partial class _SchedulerDay
+public partial class _SchedulerDay<TItem>
 {
     #region Members
 
@@ -42,7 +42,7 @@ public partial class _SchedulerDay
     /// <summary>
     /// Gets or sets the scheduler component that the views belong to.
     /// </summary>
-    [CascadingParameter] public Scheduler Scheduler { get; set; }
+    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     [Parameter] public DateOnly? Date { get; set; }
 

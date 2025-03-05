@@ -14,7 +14,8 @@ namespace Blazorise.Scheduler;
 /// <summary>
 /// A scheduler component that allows users to view and manage appointments.
 /// </summary>
-public partial class Scheduler : BaseComponent, IAsyncDisposable
+[CascadingTypeParameter( nameof( TItem ) )]
+public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
 {
     #region Members
 
@@ -23,9 +24,9 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     /// </summary>
     private SchedulerState state = new();
 
-    private SchedulerToolbar schedulerToolbar;
-    private SchedulerDayView schedulerDayView;
-    private SchedulerWeekView schedulerWeekView;
+    private SchedulerToolbar<TItem> schedulerToolbar;
+    private SchedulerDayView<TItem> schedulerDayView;
+    private SchedulerWeekView<TItem> schedulerWeekView;
 
     private readonly EventCallbackSubscriber prevDaySubscriber;
     private readonly EventCallbackSubscriber nextDaySubscriber;
@@ -101,17 +102,17 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
         await base.DisposeAsync( disposing );
     }
 
-    internal void NotifySchedulerToolbar( SchedulerToolbar schedulerToolbar )
+    internal void NotifySchedulerToolbar( SchedulerToolbar<TItem> schedulerToolbar )
     {
         this.schedulerToolbar = schedulerToolbar;
     }
 
-    internal void NotifySchedulerDayView( SchedulerDayView schedulerDayView )
+    internal void NotifySchedulerDayView( SchedulerDayView<TItem> schedulerDayView )
     {
         this.schedulerDayView = schedulerDayView;
     }
 
-    internal void NotifySchedulerWeekView( SchedulerWeekView schedulerWeekView )
+    internal void NotifySchedulerWeekView( SchedulerWeekView<TItem> schedulerWeekView )
     {
         this.schedulerWeekView = schedulerWeekView;
     }

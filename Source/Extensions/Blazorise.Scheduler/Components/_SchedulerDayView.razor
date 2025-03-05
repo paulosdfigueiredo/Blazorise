@@ -1,5 +1,6 @@
-﻿<Div Flex="Blazorise.Flex.Default.Grow.Is1">
+﻿@typeparam TItem
+<Div Flex="Blazorise.Flex.Default.Grow.Is1">
     <_SchedulerHourColumn StartTime="@StartTime" EndTime="@EndTime" />
 
-    <_SchedulerDayColumn StartTime="@StartTime" EndTime="@EndTime" Date="@SelectedDate" />
+    <_SchedulerDayColumn TItem="TItem" StartTime="@StartTime" EndTime="@EndTime" Date="@SelectedDate" />
 </Div>

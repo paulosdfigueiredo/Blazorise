@@ -1,20 +1,21 @@
 ﻿@inherits BaseComponent
+@typeparam TItem
 <Div Class="@ClassNames" Style="@StyleNames" Flex="Blazorise.Flex.Column.Wrap" Border="Blazorise.Border.Is1">
     <CascadingValue Value="@this" IsFixed>
         <CascadingValue Value="@State">
             @if ( schedulerToolbar is not null && ShowToolbar )
             {
-                <_SchedulerToolbar />
+                <_SchedulerToolbar TItem="TItem" />
             }
 
-            <_SchedulerViews>
+            <_SchedulerViews TItem="TItem">
                 @if ( ShowDayView )
                 {
-                    <_SchedulerDayView StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@state.SelectedDate" />
+                    <_SchedulerDayView TItem="TItem" StartTime="@schedulerDayView.StartTime" EndTime="@schedulerDayView.EndTime" SelectedDate="@state.SelectedDate" />
                 }
                 @if ( ShowWeekView )
                 {
-                    <_SchedulerWeekView StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" />
+                    <_SchedulerWeekView TItem="TItem" StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" />
                 }
             </_SchedulerViews>
         </CascadingValue>

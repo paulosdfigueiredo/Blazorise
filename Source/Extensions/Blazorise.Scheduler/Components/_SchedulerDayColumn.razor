@@ -1,4 +1,5 @@
-﻿<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
+﻿@typeparam TItem
+<Div Position="Blazorise.Position.Relative" Flex="Blazorise.Flex.Grow.Is1">
     @if ( ShowDayHeader )
     {
         <Div Flex="Blazorise.Flex.Column.JustifyContent.Center.AlignItems.Center" Width="Blazorise.Width.Is100" Height="Height.Px( 60 )" Border="Border.Is1.OnBottom.Is1.OnStart" Background="@BackgroundColor" @onclick="@(() => Console.WriteLine( $"header click: {Date}" ))">
@@ -12,7 +13,7 @@
     }
     @for ( int hour = ( StartTime?.Hour ?? 0 ); hour <= ( EndTime?.Hour ?? 24 ); ++hour )
     {
-        <_SchedulerDay @key="@hour" Date="@Date" Hour="@hour" />
+        <_SchedulerDay TItem="TItem" @key="@hour" Date="@Date" Hour="@hour" />
     }
 </Div>
 @code {

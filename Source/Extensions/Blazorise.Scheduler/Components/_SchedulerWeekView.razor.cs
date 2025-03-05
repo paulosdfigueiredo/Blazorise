@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise.Scheduler.Components;
 
-public partial class _SchedulerWeekView
+public partial class _SchedulerWeekView<TItem>
 {
     #region Members
 
@@ -20,7 +20,7 @@ public partial class _SchedulerWeekView
     /// <summary>
     /// Gets or sets the scheduler component that the view belongs to.
     /// </summary>
-    [CascadingParameter] public Scheduler Scheduler { get; set; }
+    [CascadingParameter] public Scheduler<TItem> Scheduler { get; set; }
 
     [Parameter] public DateOnly? SelectedDate { get; set; }
 
