@@ -69,11 +69,11 @@ public partial class Scheduler : BaseComponent, IAsyncDisposable
     /// <inheritdoc/>
     public override async Task SetParametersAsync( ParameterView parameters )
     {
-        var dateChanged = parameters.TryGetValue<DateOnly>( nameof( Date ), out var paramDate ) && !Date.IsEqual( paramDate );
+        var dateChanged = parameters.TryGetValue<DateOnly>( nameof( Date ), out var paramDate ) && !state.SelectedDate.IsEqual( paramDate );
 
         if ( dateChanged )
         {
-            Date = paramDate;
+            state.SelectedDate = paramDate;
         }
 
         await base.SetParametersAsync( parameters );
