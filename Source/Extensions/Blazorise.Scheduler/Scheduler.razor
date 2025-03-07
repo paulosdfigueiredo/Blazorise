@@ -18,6 +18,7 @@
                     <_SchedulerWeekView TItem="TItem" StartTime="@schedulerWeekView.StartTime" EndTime="@schedulerWeekView.EndTime" SelectedDate="@state.SelectedDate" FirstDayOfWeek="@FirstDayOfWeek" />
                 }
             </_SchedulerViews>
+            <_SchedulerModal TItem="TItem" @ref="@schedulerModalRef" TitleField="@TitleField" DescriptionField="@DescriptionField" StartField="@StartField" EndField="@EndField" Saved="@OnModalSaved" />
         </CascadingValue>
     </CascadingValue>
 </Div>

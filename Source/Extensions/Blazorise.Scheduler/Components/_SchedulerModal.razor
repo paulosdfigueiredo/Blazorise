@@ -1,0 +1,43 @@
+﻿@typeparam TItem
+<Modal @ref="@modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Employee edit</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if ( TitleAvailable )
+            {
+                <Field>
+                    <FieldLabel>Title</FieldLabel>
+                    <TextEdit @bind-Value="@Title" />
+                </Field>
+            }
+            @if ( StartAvailable )
+            {
+                <Field>
+                    <FieldLabel>Start</FieldLabel>
+                    <DatePicker @bind-Value="@Start" />
+                </Field>
+            }
+            @if ( EndAvailable )
+            {
+                <Field>
+                    <FieldLabel>End</FieldLabel>
+                    <DatePicker @bind-Value="@End" />
+                </Field>
+            }
+            @if ( DescriptionAvailable )
+            {
+                <Field>
+                    <FieldLabel>Description</FieldLabel>
+                    <MemoEdit @bind-Value="@Description" Rows="4" />
+                </Field>
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@Cancel">Close</Button>
+            <Button Color="Color.Primary" Clicked="@Submit">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>

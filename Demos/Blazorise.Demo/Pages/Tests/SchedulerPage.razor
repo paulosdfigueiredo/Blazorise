@@ -29,15 +29,19 @@
 
     private Task OnSlotClicked( SchedulerSlotClickedEventArgs eventArgs )
     {
-        Appointments.Add( new SchedulerAppointment( "test", "some desc",
-            new DateTime( eventArgs.Date, eventArgs.Time ),
-            new DateTime( eventArgs.Date, eventArgs.Time ).AddHours( 1 )
-        ) );
+        // Appointments.Add( new SchedulerAppointment( "test", "some desc",
+        //     new DateTime( eventArgs.Date, eventArgs.Time ),
+        //     new DateTime( eventArgs.Date, eventArgs.Time ).AddHours( 1 )
+        // ) );
         return Task.CompletedTask;
     }
 
     public class SchedulerAppointment
     {
+        public SchedulerAppointment()
+        {
+        }
+
         public SchedulerAppointment( string title, string description, DateTime start, DateTime end )
         {
             Id = Guid.NewGuid().ToString();

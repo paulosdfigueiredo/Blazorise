@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazorise.DeepCloner;
 using Blazorise.Extensions;
 using Blazorise.Infrastructure;
+using Blazorise.Scheduler.Components;
 using Blazorise.Scheduler.Extensions;
 using Blazorise.Scheduler.Utilities;
 using Blazorise.Utilities;
@@ -37,8 +39,11 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     private readonly EventCallbackSubscriber weekViewSubscriber;
 
     private Func<TItem, DateOnly, int, TimeSpan, bool> searchPredicate;
+    private Func<TItem, object> getIdFunc;
     private Func<TItem, string> getTitleFunc;
     private Func<TItem, string> getDescriptionFunc;
+
+    protected _SchedulerModal<TItem> schedulerModalRef;
 
     #endregion
 
@@ -56,6 +61,7 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         weekViewSubscriber = new EventCallbackSubscriber( EventCallback.Factory.Create( this, NavigateWeekView ) );
 
         searchPredicate = SchedulerExpressionCompiler.BuildSearchPredicate<TItem>( StartField, EndField );
+        getIdFunc = SchedulerFunctionCompiler.CreateValueGetter<TItem>( IdField );
         getTitleFunc = SchedulerExpressionCompiler.BuildGetStringFunc<TItem>( TitleField );
         getDescriptionFunc = SchedulerExpressionCompiler.BuildGetStringFunc<TItem>( DescriptionField );
     }
@@ -231,9 +237,35 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
         return getDescriptionFunc( appointment );
     }
 
-    internal Task NotifySlotClicked( DateOnly date, TimeOnly time )
+    internal async Task NotifySlotClicked( DateOnly date, TimeOnly time )
     {
-        return SlotClicked.InvokeAsync( new SchedulerSlotClickedEventArgs( date, time ) );
+        if ( schedulerModalRef is not null )
+        {
+            var item = Appointments.FirstOrDefault( x => searchPredicate( x, date, time.Hour, time.ToTimeSpan() ) );
+
+            await schedulerModalRef.ShowModal( item.DeepClone() );
+        }
+
+        await SlotClicked.InvokeAsync( new SchedulerSlotClickedEventArgs( date, time ) );
+    }
+
+    private Task OnModalSaved( TItem item )
+    {
+        var id = getIdFunc( item );
+        var existingItem = Appointments.FirstOrDefault( x => Equals( getIdFunc( x ), id ) );
+
+        if ( existingItem is not null && Appointments is ICollection<TItem> items )
+        {
+            var index = Appointments.ToList().IndexOf( existingItem );
+            items.Remove( existingItem );
+            items.Add( item );
+        }
+        else
+        {
+            Appointments = Appointments.Append( item );
+        }
+
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -289,6 +321,11 @@ public partial class Scheduler<TItem> : BaseComponent, IAsyncDisposable
     /// Indicates if the toolbar should be displayed.
     /// </summary>
     [Parameter] public bool ShowToolbar { get; set; } = true;
+
+    /// <summary>
+    /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the unique identifier of the appointment. Defaults to "Id".
+    /// </summary>
+    [Parameter] public string IdField { get; set; } = "Id";
 
     /// <summary>
     /// Defines the field name of the <see cref="Scheduler{TItem}"/> that represents the start date of the appointment. Defaults to "Start".
