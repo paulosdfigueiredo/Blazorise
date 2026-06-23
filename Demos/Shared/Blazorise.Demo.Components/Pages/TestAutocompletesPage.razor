@@ -1,0 +1,164 @@
+﻿@page "/tests/autocomplete_test"
+@using System.Collections.ObjectModel
+
+<Row>
+	<Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+		<Card Margin="Margin.Is4.OnY">
+			<CardHeader>
+				<CardTitle>Basic Search</CardTitle>
+			</CardHeader>
+			<CardBody>
+				<Paragraph TextColor="TextColor.Secondary">
+					Search a local country list and optionally allow free typing.
+				</Paragraph>
+				<Field>
+					<Check @bind-Value="@autocompleteFreeTyping">Allow free typing</Check>
+				</Field>
+				<Field Horizontal JustifyContent="JustifyContent.End">
+					<FieldLabel ColumnSize="ColumnSize.Is2">Select Value</FieldLabel>
+					<FieldBody ColumnSize="ColumnSize.Is10">
+						<Autocomplete MinSearchLength="autocompleteMinLength"
+										  TItem="Country"
+										  TValue="string"
+										  Data="@Countries"
+										  TextField="@(( item ) => $"{item.Iso} - {item.Name}")"
+										  ValueField="@((item) => item.Iso)"
+										  @bind-SelectedValue="selectedAutoCompleteValue"
+										  @bind-SelectedText="selectedAutoCompleteText"
+										  Placeholder="Search..."
+										  FreeTyping="autocompleteFreeTyping"
+										  CustomFilter="@(( item, searchValue ) => searchValue == null ? false : item.Name.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+							<NotFoundTemplate> Sorry... @context was not found! :( </NotFoundTemplate>
+							<ItemContent>
+								<Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+									<Heading Margin="Margin.Is2.FromBottom">@context.Value</Heading>
+									<Small>@context.Item.Capital</Small>
+								</Div>
+								<Paragraph Margin="Margin.Is2.FromBottom">@context.Text</Paragraph>
+							</ItemContent>
+						</Autocomplete>
+					</FieldBody>
+				</Field>
+				<Field Horizontal JustifyContent="JustifyContent.End">
+					<FieldBody ColumnSize="ColumnSize.Is10.Is2.WithOffset">
+						Selected value: @selectedAutoCompleteValue
+					</FieldBody>
+					<FieldBody ColumnSize="ColumnSize.Is10.Is2.WithOffset">
+						Selected text value: @selectedAutoCompleteText
+					</FieldBody>
+				</Field>
+				<Field>
+					<FieldBody>
+						<Button Background="Background.Info" Clicked="@SetPortugal">Set Portugal</Button>
+						<Button Background="Background.Danger" Clicked="@SetNull">Set Null</Button>
+					</FieldBody>
+				</Field>
+			</CardBody>
+		</Card>
+	</Column>
+	<Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+		<Card Margin="Margin.Is4.OnY">
+			<CardHeader>
+				<CardTitle>Multiple Selection</CardTitle>
+			</CardHeader>
+			<CardBody>
+				<Paragraph TextColor="TextColor.Secondary">
+					Keep the popup open and select more than one country.
+				</Paragraph>
+				<Field>
+					<Check @bind-Value="@multipleAutocompleteFreeTyping">Allow free typing</Check>
+				</Field>
+				<Field Horizontal JustifyContent="JustifyContent.End">
+					<FieldLabel ColumnSize="ColumnSize.Is2">Min Length</FieldLabel>
+					<FieldBody ColumnSize="ColumnSize.Is10">
+						<NumericPicker @bind-Value="@multipleAutocompleteMinLength" />
+					</FieldBody>
+				</Field>
+				<Field Horizontal JustifyContent="JustifyContent.End">
+					<FieldLabel ColumnSize="ColumnSize.Is2">Select Values</FieldLabel>
+					<FieldBody ColumnSize="ColumnSize.Is10">
+						<Autocomplete TItem="Country"
+										  TValue="string"
+										  Data="@Countries"
+										  TextField="@(( item ) => item.Name)"
+										  ValueField="@((item) => item.Iso)"
+										  Placeholder="Search..."
+										  FreeTyping="multipleAutocompleteFreeTyping"
+										  CloseOnSelection="false"
+										  MinSearchLength="multipleAutocompleteMinLength"
+										  SelectionMode="AutocompleteSelectionMode.Checkbox"
+										  @bind-SelectedValues="multipleSelectionData"
+										  @bind-SelectedTexts="multipleSelectionTexts">
+						</Autocomplete>
+					</FieldBody>
+				</Field>
+				<Field Horizontal JustifyContent="JustifyContent.End">
+					<FieldBody ColumnSize="ColumnSize.Is10.Is2.WithOffset">
+						Selected Values: @(multipleSelectionData != null ? string.Join(',', multipleSelectionData) : "");
+					</FieldBody>
+					<FieldBody ColumnSize="ColumnSize.Is10.Is2.WithOffset">
+						Selected Texts: @(multipleSelectionTexts != null ? string.Join(',', multipleSelectionTexts) : "");
+					</FieldBody>
+				</Field>
+				<Field>
+					<FieldBody>
+						<Button Background="Background.Info" Clicked="@SetPortugalAndCroatia">Set Portugal + Croatia</Button>
+						<Button Background="Background.Danger" Clicked="@SetNullMultiple">Set Null</Button>
+					</FieldBody>
+				</Field>
+			</CardBody>
+		</Card>
+	</Column>
+</Row>
+
+@code {
+	[Inject]
+	public CountryData CountryData { get; set; }
+	public IEnumerable<Country> Countries;
+
+	private string selectedAutoCompleteValue { get; set; }
+	private string selectedAutoCompleteText { get; set; }
+
+	private int autocompleteMinLength = 0;
+	private bool autocompleteFreeTyping = false;
+
+	private List<string> multipleSelectionData;
+	private List<string> multipleSelectionTexts;
+	private int multipleAutocompleteMinLength = 0;
+	private bool multipleAutocompleteFreeTyping = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		selectedAutoCompleteValue = "PT";
+		multipleSelectionData = new() { "PT", "HR" };
+
+		await LoadData();
+		await base.OnInitializedAsync();
+	}
+
+	private void SetPortugal()
+	{
+		selectedAutoCompleteValue = "PT";
+	}
+
+	private void SetPortugalAndCroatia()
+	{
+		multipleSelectionData = new() { "PT", "HR" };
+	}
+
+	private void SetNullMultiple()
+	{
+		multipleSelectionData = null;
+	}
+
+	private void SetNull()
+	{
+		selectedAutoCompleteValue = null;
+	}
+
+	private async Task LoadData()
+	{
+		await Task.Delay(2000);
+		Countries = await CountryData.GetDataAsync();
+	}
+}
