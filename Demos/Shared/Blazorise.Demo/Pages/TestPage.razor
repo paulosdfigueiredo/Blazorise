@@ -1,0 +1,73 @@
+@page "/test-datagrid-autocomplete-enter"
+@using Blazorise.DataGrid
+
+<Row>
+	<Column>
+		<Card Margin="Margin.Is4.OnY">
+			<CardHeader>
+				<CardTitle>Autocomplete in Popup edit</CardTitle>
+			</CardHeader>
+			<CardBody>
+				<Paragraph>Open the row's Edit command, type "Be", then press ArrowDown and Enter. SubmitFormOnEnter is false, and the page instance token changes on a full reload.</Paragraph>
+				<Paragraph>Page instance: @pageInstanceId</Paragraph>
+				<DataGrid TItem="AutocompleteSubmitRow"
+							 Data="@rows"
+							 Editable
+							 EditMode="DataGridEditMode.Popup"
+							 SubmitFormOnEnter="false"
+							 CommandMode="DataGridCommandMode.Commands">
+					<DataGridColumns>
+						<DataGridCommandColumn TItem="AutocompleteSubmitRow"
+													  NewCommandAllowed="false"
+													  DeleteCommandAllowed="false" />
+						<DataGridColumn TItem="AutocompleteSubmitRow"
+											 Field="@nameof( AutocompleteSubmitRow.Option )"
+											 Caption="Option"
+											 Editable>
+							<EditTemplate Context="context">
+								<Autocomplete TItem="AutocompleteSubmitOption"
+												  TValue="string"
+												  Data="@options"
+												  MinSearchLength="0"
+												  TextField="@(( option ) => option.Name)"
+												  ValueField="@(( option ) => option.Value)"
+												  SelectedValue="@(context.CellValue as string)"
+												  SelectedValueChanged="@( ( value ) => { context.CellValue = value; } )"
+												  Placeholder="Type to search..." />
+							</EditTemplate>
+						</DataGridColumn>
+					</DataGridColumns>
+				</DataGrid>
+				<Paragraph Margin="Margin.Is3.OnY">Saved option: @rows[0].Option</Paragraph>
+			</CardBody>
+		</Card>
+	</Column>
+</Row>
+
+@code {
+	private readonly string pageInstanceId = System.Guid.NewGuid().ToString("N");
+
+	private readonly List<AutocompleteSubmitRow> rows = new()
+	 {
+		  new() { Option = "alpha" },
+	 };
+
+	private readonly List<AutocompleteSubmitOption> options = new()
+	 {
+		  new() { Name = "Alpha", Value = "alpha" },
+		  new() { Name = "Beta", Value = "beta" },
+		  new() { Name = "Bravo", Value = "bravo" },
+	 };
+
+	private sealed class AutocompleteSubmitRow
+	{
+		public string Option { get; set; }
+	}
+
+	private sealed class AutocompleteSubmitOption
+	{
+		public string Name { get; set; }
+
+		public string Value { get; set; }
+	}
+}
